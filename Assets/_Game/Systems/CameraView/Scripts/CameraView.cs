@@ -22,7 +22,7 @@ namespace CameraView
         private Vector3 _previousePosition;
         private Vector3 _positionInput;
         private bool IsTopDownView => _currentView == 2;
-        private bool wasLockedCursor;
+        private bool _wasLockedCursor;
         public float x;
         public float y;
         private Inputs.CameraViewInput _input;
@@ -44,7 +44,7 @@ namespace CameraView
         public ViewData GetTopDownViewData => _viewData[2];
         private void Start()
         {
-            PrivateSetLockCursor(true);
+            SetLockCursor(true);
         }
         public void SetInput(Inputs.CameraViewInput input)
         {
@@ -85,19 +85,16 @@ namespace CameraView
         public void SetLockCursor(bool value)
         {
             if (IsTopDownView)
-                return;
-            PrivateSetLockCursor(value);
+                _wasLockedCursor = value;
+            else
+                PrivateSetLockCursor(value);
         }
         public void PrivateSetLockCursor(bool value)
         {
             if (value)
-            {
                 Cursor.lockState = CursorLockMode.Locked;
-            }
             else
-            {
                 Cursor.lockState = CursorLockMode.None;
-            }
         }
         public void ResetView()
         {
@@ -107,6 +104,7 @@ namespace CameraView
         }
         public void ChangeCamera()
         {
+            bool wasTopDownView = IsTopDownView;
             _currentView++;
             _currentView %= _viewData.Length;
             _minDist = _viewData[_currentView].minDist;
@@ -115,19 +113,21 @@ namespace CameraView
             transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
             _distance.transform.SetLocalPositionAndRotation(new Vector3(0, 0, _minDist), Quaternion.identity);
             _camera.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
-            if (IsTopDownView)
+            if (!wasTopDownView && IsTopDownView)
             {
-                wasLockedCursor = Cursor.lockState == CursorLockMode.Locked;
-                //_currentView = 
+                _wasLockedCursor = Cursor.lockState == CursorLockMode.Locked;
+                PrivateSetLockCursor(false);
                 SetInput(50, 45, 0);
             }
-            else
-                PrivateSetLockCursor(wasLockedCursor);
+            else if (wasTopDownView && !IsTopDownView)
+            {
+                PrivateSetLockCursor(_wasLockedCursor);
+            }
             //ResetView();
         }
         private void SetMouseLockMode()
         {
-            PrivateSetLockCursor(_input.LockMouseMode);
+            SetLockCursor(_input.LockMouseMode);
         }
         public void SetInput(float x = 0, float y = 0, float z = 0)
         {
@@ -141,6 +141,7 @@ namespace CameraView
         {
             if (IsTopDownView)
             {
+                SetInput(50, 45, 0);
                 Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
                 if (Physics.Raycast(ray, out RaycastHit hit))
                 {
@@ -150,11 +151,10 @@ namespace CameraView
                     {
                         _previousePosition = _positionInput;
                         Vector3 direction = _positionInput - transform.position;
-                        direction.y = 0f;
-                        _mouseY = Vector3.SignedAngle(transform.forward, direction.normalized, Vector3.up);
+                        Vector3 xz = new(direction.x, 0f, direction.z);
 
-                        _mouseX = 0f;
-                        SetInput(50, 45, 0);
+                        _mouseY = Mathf.Atan2(xz.x, xz.z) * Mathf.Rad2Deg;
+                        _mouseX = Mathf.Atan2(direction.y, xz.magnitude) * Mathf.Rad2Deg;
                     }
                 }
                 return;

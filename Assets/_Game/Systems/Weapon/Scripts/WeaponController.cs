@@ -78,14 +78,16 @@ namespace Systems.Weapon
         }
         private void TryShoot()
         {
-            if (_reloadingTime > 0) return;
+            if (_reloadingTime > 0)
+                return;
             if (!_isAutomated)
             {
                 //if _isAutomated wait Released
                 _isFiring = false;
             }
 
-            if (_projectileCount <= 0) return;
+            if (_projectileCount <= 0)
+                return;
 
             Shoot();
         }

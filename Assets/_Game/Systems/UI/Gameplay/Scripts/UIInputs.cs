@@ -60,10 +60,26 @@ namespace Systems.UI.Gameplay.Inputs
     }
     public class UIInputsNullReference : IUIInputs
     {
-        public event System.Action EventOpenMenu;
-        public event System.Action EventAttackPressed;
-        public event System.Action EventAttackReleased;
-        public event System.Action EventReloading;
+        public event System.Action EventOpenMenu
+        {
+            add { }
+            remove { }
+        }
+        public event System.Action EventAttackPressed
+        {
+            add { }
+            remove { }
+        }
+        public event System.Action EventAttackReleased
+        {
+            add { }
+            remove { }
+        }
+        public event System.Action EventReloading
+        {
+            add { }
+            remove { }
+        }
         public float MoveX => 0;
         public float MoveZ => 0;
         public void Reset() { }
