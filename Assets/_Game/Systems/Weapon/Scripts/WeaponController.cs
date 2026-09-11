@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
+using UnityEngine;
 namespace Systems.Weapon
 {
     public class WeaponController : MonoBehaviour
@@ -11,6 +11,7 @@ namespace Systems.Weapon
             Reloading
         }
         private readonly ContainerData.WeaponContainerData _weaponContainerData = new();
+        [SerializeField] private Data.WeaponData _weaponData;
         public ContainerData.IWeaponContainerData GetWeaponContainerData => _weaponContainerData;
         private bool _isFiring;
         private bool _isAutomated;
@@ -19,7 +20,7 @@ namespace Systems.Weapon
         private WeaponState _state;
         [SerializeField] private Transform _targetPoint;
         [SerializeField] private DecalLifetime _decalLifeTimePrefab;
-        [SerializeField] private GameObject _muzzleFlash;
+        [SerializeField] private Transform _muzzleFlash;
         private float _reloadTime;
         private float _reloadingTime;
         private float _cooldownTime;
@@ -27,15 +28,15 @@ namespace Systems.Weapon
         //Ammo
         private int _projectileCount;
         private int _projectileMaxCount;
-        private void Awake()
+        private void Start()
         {
-            _muzzleFlash.SetActive(false);
-            _reloadTime = 6;
-            _cooldownTime = .4f;
-            _projectileMaxCount = 30;
-            _damage = 40;
-            _isAutomated = true;
-            _shootDistance = 700;
+            _muzzleFlash?.gameObject.SetActive(false);
+            _reloadTime = _weaponData.ReloadTime;
+            _cooldownTime = _weaponData.CooldownTime;
+            _projectileMaxCount = _weaponData.ProjectileMaxCount;
+            _damage = _weaponData.Damage;
+            _isAutomated = _weaponData.IsAutomated;
+            _shootDistance = _weaponData.ShootDistance;
             UpdateState();
             StartReload();
         }
@@ -159,9 +160,9 @@ namespace Systems.Weapon
         }
         private IEnumerator MuzzleFlashRoutine()
         {
-            _muzzleFlash.SetActive(true);
+            _muzzleFlash?.gameObject.SetActive(true);
             yield return new WaitForSeconds(0.03f);
-            _muzzleFlash.SetActive(false);
+            _muzzleFlash?.gameObject.SetActive(false);
         }
     }
 }

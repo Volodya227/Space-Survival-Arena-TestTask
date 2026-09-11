@@ -9,7 +9,7 @@ namespace Systems.Enemy.Data
         [SerializeField] private int _maxHealth = 250;
         [SerializeField] private float _distanceDamage;
         [SerializeField] private float _damage;
-        public float Speed => _speed;
+        public float Speed => _speed / 3.6f;
         public int MaxHealth => _maxHealth;
         public View.EnemyView Prefab => _gameObject;
         public float DistanceDamage => _distanceDamage;

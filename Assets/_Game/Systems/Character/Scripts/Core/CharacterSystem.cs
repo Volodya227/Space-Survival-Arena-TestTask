@@ -29,7 +29,6 @@ namespace Systems.Character
         public void InitCharacter(Transform position)
         {
             CharacterControllerBehaviour newItem = Instantiate(_characterControllerBehaviourPrefab, position.position, position.rotation);
-            Physics.SyncTransforms();
             _characters.Add(newItem);
         }
         public void ChangeCharacter()

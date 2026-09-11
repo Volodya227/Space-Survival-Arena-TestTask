@@ -3,6 +3,7 @@ namespace Systems.Player.Inputs
     public abstract class PlayerInput : UnityEngine.MonoBehaviour
     {
         public event System.Action EventChanageCharacter;
+        protected PlayerInputCommands _playerInputCommands;
         protected bool _isUI = false;
         private bool _bindedUIInput = false;
         protected readonly PlayerCharacterInput _characterInput = new();
@@ -20,15 +21,25 @@ namespace Systems.Player.Inputs
         protected bool _dragMouse;
         protected void Awake()
         {
+            _playerInputCommands = new PlayerInputCommandsOld();
             SetUI(null);
             _cameraViewInput.EventChangeCameraView += SetViewToCharacter;
             _playerInputToUI.EventSetActiveUI += SetActiveUIMenu;
-            SetActiveUIInput(true);//correctly set state
+            SetActiveUIInput(false);//correctly set state
+        }
+        private void OnEnable()
+        {
+            _playerInputCommands.OnEnable();
+        }
+        private void OnDisable()
+        {
+            _playerInputCommands.OnDisable();
         }
         private void OnDestroy()
         {
             _playerInputToUI.EventSetActiveUI -= SetActiveUIMenu;
             _cameraViewInput.EventChangeCameraView -= SetViewToCharacter;
+            _playerInputCommands.Dispose();
         }
         public void SetEventSystem(UnityEngine.EventSystems.EventSystem eventSystem)
         {

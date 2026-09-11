@@ -8,7 +8,9 @@ namespace Systems.Character
         public RuntimeAnimatorController Controller;
         public Transform FirstView;
         public Transform ThirdView;
-        public Weapon.WeaponController WeaponController;
+        public Weapon.WeaponController WeaponControllerPrefab;
+        public Data.CharacterData Data;
+        public Transform PivotArmForWeapon;
     }
     [System.Serializable]
     public class CharacterController
@@ -17,7 +19,8 @@ namespace Systems.Character
         private readonly Rigidbody _body;
         private Weapon.WeaponController _weaponController;
         private Inputs.CharacterInput _input;
-        private Weapon.Inputs.WeaponInput _weaponInput;
+        private Weapon.Inputs.WeaponInput _weaponInput = null;
+        private readonly Data.CharacterData _data;
         private readonly ContainerData.CharacterContainerData _state;
         public ContainerData.ICharacterContainerData State => _state;
         private readonly CharacterConfig _components;
@@ -26,20 +29,22 @@ namespace Systems.Character
         private readonly CharacterRotation _rotation;
         private readonly Transform _firstView;
         private readonly Transform _thirdView;
+        private readonly Transform _pivotArmForWeapon;
         public Transform FirstView => _firstView;
         public Transform ThirdView => _thirdView;
         public CharacterController(CharacterConfig components, Rigidbody body)
         {
+            _pivotArmForWeapon = components.PivotArmForWeapon;
+            _data = components.Data;
             _body = body;
             _components = components;
-            _state = new ContainerData.CharacterContainerData();
+            _state = new ContainerData.CharacterContainerData(_data.MaxHealth);
             _characterView = new ChatacterView(_state, _components.Controller, _components.Animation);
-            _movement = new CharacterMovement(_state.movementState, _body);
+            _movement = new CharacterMovement(_state.movementState, _body, _data);
             _rotation = new CharacterRotation(_body.transform);
             _firstView = _components.FirstView;
             _thirdView = _components.ThirdView;
-            _weaponController = _components.WeaponController;
-            //_state.SetWeaponContainerData(_weaponController.GetWeaponContainerData);
+            SetWeapon(Object.Instantiate(_components.WeaponControllerPrefab));//FIX
             Respawn();
             SetInput(null);
         }
@@ -49,26 +54,20 @@ namespace Systems.Character
         }
         public void SetInput(Inputs.CharacterInput input, Weapon.Inputs.WeaponInput weaponInput = null)
         {
-            if(_input != null)
-            {
-                _input.SetActive(false);
-            }
+            _input?.SetActive(false);
+            _weaponInput?.SetActive(false);
             _input = input;
             _movement.SetInput(_input);
             _rotation.SetInput(_input);
             _weaponInput = weaponInput;
-            if (_isAlive)
-            {
-                if (_input != null)
-                {
-                    _input.SetActive(true);
-                }
-                if (_weaponController != null)
-                {
-                    _weaponController.SetInput(_weaponInput);
-                }
-            }
+            _weaponController?.SetInput(_weaponInput);
+            UpdateInputState();
             //TODO reset state if input == null
+        }
+        private void UpdateInputState()
+        {
+            _input?.SetActive(_isAlive);
+            _weaponInput?.SetActive(_isAlive && _weaponController != null);
         }
         public void Update()
         {
@@ -84,6 +83,22 @@ namespace Systems.Character
         {
             _movement.Moving();
         }
+        public void SetWeapon(Weapon.WeaponController weaponController)
+        {
+            if (_weaponController != null)
+            {
+                _weaponController.SetInput(null);
+            }
+            _weaponController = weaponController;
+            if (_weaponController != null)
+            {
+                _state.SetWeaponContainerData(_weaponController.GetWeaponContainerData);
+                _weaponController.transform.parent = _pivotArmForWeapon;
+                _weaponController.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+                _weaponController.SetInput(_weaponInput);
+                UpdateInputState();
+            }
+        }
         public void TakeDamage(float damage) {
             _state.healthState.TakeDamage(damage);
             if (_state.healthState.Health == 0)
@@ -94,18 +109,13 @@ namespace Systems.Character
         private void Dead()
         {
             _isAlive = false;
-            _input?.SetActive(false);
-            _weaponInput?.SetActive(false);//need change this line by new logic integration Weapon
+            UpdateInputState();
         }
         public void Respawn()
         {
             _state.healthState.SetFullHealth();
             _isAlive = true;
-            _input?.SetActive(true);
-            if (_weaponController != null)
-            {
-                _weaponInput.SetActive(true);
-            }
+            UpdateInputState();
         }
     }
 }

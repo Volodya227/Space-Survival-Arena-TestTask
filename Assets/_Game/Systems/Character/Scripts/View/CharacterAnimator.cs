@@ -14,7 +14,7 @@ namespace Systems.Character
             _state = state;
             _contoller = contoller;
             _animator = animator;
-            if (_animator != null)
+            if (_animator != null && _contoller != null)
             {
                 _animator.runtimeAnimatorController = _contoller;
             }

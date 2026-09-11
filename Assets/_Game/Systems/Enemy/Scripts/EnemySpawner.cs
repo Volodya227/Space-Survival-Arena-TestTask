@@ -42,7 +42,6 @@ namespace Systems.Enemy
             if(controller != null)
                 return controller;
             return CreateNew(indexSpawnPoint, type);
-            //return null;
         }
         public void ReturnDisposedEnemy(EnemyController controller) {
             _pool[controller.IDType].Enqueue(controller);
@@ -51,6 +50,7 @@ namespace Systems.Enemy
         {
             EnemyController controller = Object.Instantiate(_prefab, _data.GetPoint(indexSpawnPoint).position, _data.GetPoint(indexSpawnPoint).rotation);
             controller.SetData(_enemyData[type], type);
+            controller.enabled = true;
 
             //TODO bind on Kill enemy event
             return controller;

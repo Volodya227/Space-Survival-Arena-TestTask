@@ -24,7 +24,7 @@ namespace Systems.Enemy.Data
         {
             _dto = dto;
         }
-        public float Speed => _dto.speed;
+        public float Speed => _dto.speed / 3.6f;
         public int MaxHealth => 100;
         public View.EnemyView Prefab => _dto.gameObject;
         public float DistanceDamage => _dto.distanceDamage;

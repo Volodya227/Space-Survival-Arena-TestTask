@@ -30,7 +30,7 @@ namespace Systems.Player
             ChangedStateHuman();
             //UI
             _systemUI.GetCharacterUI.SetState(_character.State);
-            _systemUI.GetWeaponUI.SetState(_character.State.WeaponContainerData);
+            _systemUI.GetWeaponUI.SetState(_character.State?.WeaponContainerData);
             //TODO unbind Weapon from UI when character get or lose weapon
             //now have not this logic because weapon is item character without switch
         }

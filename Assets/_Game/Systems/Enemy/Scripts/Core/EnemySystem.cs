@@ -3,6 +3,7 @@ namespace Systems.Enemy
 {
     public class EnemySystem : MonoBehaviour
     {
+        private Coroutine _tickCoroutine;
         private EnemyController[] _enemyList;
         //initialize by BootstrapScene
         private EnemySpawner _spawner;
@@ -34,11 +35,13 @@ namespace Systems.Enemy
         {
             _spawner = new EnemySpawner(_data, _enemyData, _prefab);
             _enemyList = new EnemyController[100];
-            SpawnGroupEnemy();
+            //SpawnGroupEnemy();
+            _tickCoroutine = StartCoroutine(TickCoroutine());
         }
         private void OnDestroy()
         {
             ClearEnemy(null, true);
+            StopCoroutine(_tickCoroutine);
         }
         private void ReturnToPool(EnemyController controller)
         {
@@ -102,6 +105,15 @@ namespace Systems.Enemy
             int freeCount = Mathf.Min(FreeCount(), 10);//int groupSize = 10;
             for (int i = 0; i < freeCount; i++) {
                 CreateNewEnemy(i);
+            }
+        }
+        private System.Collections.IEnumerator TickCoroutine()
+        {
+            while (true)
+            {
+                SpawnGroupEnemy();
+
+                yield return new WaitForSeconds(10f);
             }
         }
     }

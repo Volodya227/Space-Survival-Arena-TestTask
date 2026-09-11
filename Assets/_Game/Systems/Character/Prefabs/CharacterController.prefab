@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &867917409348728556
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 134767137656169969}
+  m_Layer: 0
+  m_Name: PivotForWeapon
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &134767137656169969
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 867917409348728556}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.5, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4363613149826958740}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1210539722245437350
 GameObject:
   m_ObjectHideFlags: 0
@@ -156,7 +187,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2845743781837582800
 Transform:
   m_ObjectHideFlags: 0
@@ -309,6 +340,7 @@ Transform:
   - {fileID: 7567667960137044474}
   - {fileID: 2089971461427334819}
   - {fileID: 2845743781837582800}
+  - {fileID: 134767137656169969}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &3383666255866559743
@@ -355,6 +387,8 @@ MonoBehaviour:
     Controller: {fileID: 0}
     FirstView: {fileID: 7567667960137044474}
     ThirdView: {fileID: 2089971461427334819}
-    WeaponController: {fileID: 0}
+    WeaponControllerPrefab: {fileID: 5051060281057892237, guid: a4f038b2b3a53e14eb880215cdb6e6c6, type: 3}
+    Data: {fileID: 11400000, guid: 19c0d0115d5d06e4e89d229885936b6a, type: 2}
+    PivotArmForWeapon: {fileID: 134767137656169969}
   _core:
     _characterView: {}

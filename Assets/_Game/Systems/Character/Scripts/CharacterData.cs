@@ -1,18 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
-public class CharacterData : MonoBehaviour
+namespace Systems.Character.Data
 {
-    // Start is called before the first frame update
-    void Start()
+    [CreateAssetMenu(fileName = "data Character", menuName = "Character/Data")]
+    public class CharacterData : ScriptableObject
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        [SerializeField] private float _speed;
+        [SerializeField] private int _maxHealth;
+        public float Speed => _speed / 3.6f;
+        public int MaxHealth => _maxHealth;
     }
 }

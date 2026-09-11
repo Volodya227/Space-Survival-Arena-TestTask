@@ -13,14 +13,14 @@ namespace Systems.Character.ContainerData
         public event System.Action EventChangeWeaponSate;
         public readonly Share.MovementState movementState;
         public readonly Share.HealthState healthState;
-        public Weapon.ContainerData.IWeaponContainerData weaponContainerData;
+        private Weapon.ContainerData.IWeaponContainerData weaponContainerData;
         public Share.IMovementState MovementState => movementState;
         public Share.IHealthState HealthState => healthState;
         public Weapon.ContainerData.IWeaponContainerData WeaponContainerData => weaponContainerData;
-        public CharacterContainerData()
+        public CharacterContainerData(int maxHealth)
         {
             movementState = new Share.MovementState();
-            healthState = new Share.HealthState();
+            healthState = new Share.HealthState(maxHealth);
         }
         public void SetWeaponContainerData(Weapon.ContainerData.IWeaponContainerData weaponContainerData)
         {
