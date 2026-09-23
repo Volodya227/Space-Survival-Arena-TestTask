@@ -1,4 +1,4 @@
-namespace Systems.Enemy.Data
+namespace Systems.Enemy._Data
 {
     public interface IEnemyData
     {
@@ -7,11 +7,12 @@ namespace Systems.Enemy.Data
         public View.EnemyView Prefab { get; }
         public float DistanceDamage { get; }
         public float Damage { get; }
+        public float AttackCooldown { get; }
     }
     public class EnemyDataDTO
     {
         //DTO class use for getting data from ISaveProvider, witch can get this from data base or jsons files but hidden by abstraction the realizeable
-        //if get from ISaveProvider this file need move to namespace Data.Configs.Enemy
+        //if get from ISaveProvider this file need move to namespace _Data.Configs.Enemy
         public View.EnemyView gameObject;// need delete, or this item saving link an object in folders on prefab
         public float speed;
         public float distanceDamage;
@@ -29,5 +30,6 @@ namespace Systems.Enemy.Data
         public View.EnemyView Prefab => _dto.gameObject;
         public float DistanceDamage => _dto.distanceDamage;
         public float Damage => _dto.damage;
+        public float AttackCooldown => 15;
     }
 }

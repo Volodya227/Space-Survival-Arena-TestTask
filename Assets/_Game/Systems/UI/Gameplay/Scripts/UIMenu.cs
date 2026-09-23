@@ -13,8 +13,8 @@ namespace Systems.UI.Gameplay
         [SerializeField] private Button _settings;
         [SerializeField] private Button _returnMainMenu;
 
-        [SerializeField] private Systems.UI.Settings.UISettingsSystem _settingsSystemPrefab;
-        private Systems.UI.Settings.UISettingsSystem _settingsSystem = null;
+        [SerializeField] private Settings.UISettingsSystem _settingsSystemPrefab;
+        private Settings.UISettingsSystem _settingsSystem = null;
         private Data.ApplicationData.IApplicationData _applicationData = null;
 
         private Inputs.InputToUI _input;

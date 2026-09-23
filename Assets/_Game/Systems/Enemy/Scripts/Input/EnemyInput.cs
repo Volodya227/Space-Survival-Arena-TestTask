@@ -2,10 +2,11 @@ namespace Systems.Enemy.Inputs
 {
     public abstract class EnemyInput
     {
-        //rotation object will get from vector moving
+        public event System.Action EventAttack;
         public bool Active { get; protected set; }
         public float MoveX { get; protected set; }
         public float MoveZ { get; protected set; }
+        public float RotationY { get; protected set; }
         public EnemyInput() {
             SetActive(false);
         }
@@ -18,6 +19,12 @@ namespace Systems.Enemy.Inputs
         {
             MoveX = 0;
             MoveZ = 0;
+        }
+        protected void AttackBase()
+        {
+            if (!Active)
+                return;
+            EventAttack.Invoke();
         }
     }
 }

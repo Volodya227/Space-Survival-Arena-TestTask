@@ -1,5 +1,5 @@
 using UnityEngine;
-namespace Systems.Weapon.Data
+namespace Systems.Weapon._Data
 {
     [CreateAssetMenu(fileName = "data Weapon", menuName = "Weapon/Data")]
     public class WeaponData : ScriptableObject

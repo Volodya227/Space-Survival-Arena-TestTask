@@ -11,7 +11,7 @@ namespace Systems.Weapon
             Reloading
         }
         private readonly ContainerData.WeaponContainerData _weaponContainerData = new();
-        [SerializeField] private Data.WeaponData _weaponData;
+        [SerializeField] private _Data.WeaponData _weaponData;
         public ContainerData.IWeaponContainerData GetWeaponContainerData => _weaponContainerData;
         private bool _isFiring;
         private bool _isAutomated;
@@ -30,7 +30,7 @@ namespace Systems.Weapon
         private int _projectileMaxCount;
         private void Start()
         {
-            _muzzleFlash?.gameObject.SetActive(false);
+            _muzzleFlash.gameObject.SetActive(false);
             _reloadTime = _weaponData.ReloadTime;
             _cooldownTime = _weaponData.CooldownTime;
             _projectileMaxCount = _weaponData.ProjectileMaxCount;
@@ -160,9 +160,9 @@ namespace Systems.Weapon
         }
         private IEnumerator MuzzleFlashRoutine()
         {
-            _muzzleFlash?.gameObject.SetActive(true);
+            _muzzleFlash.gameObject.SetActive(true);
             yield return new WaitForSeconds(0.03f);
-            _muzzleFlash?.gameObject.SetActive(false);
+            _muzzleFlash.gameObject.SetActive(false);
         }
     }
 }

@@ -11,24 +11,35 @@ namespace Systems.Character
     }
     public class CharacterSystem : MonoBehaviour
     {
+        private bool _wasInit = false;
         private SpawnCharacters _spawn;
         [SerializeField] private CharacterControllerBehaviour _characterControllerBehaviourPrefab;
         private readonly List<CharacterControllerBehaviour> _characters = new();
         private int _currentCharacter = -1;
         public CharacterController GetCharacter => _characters[_currentCharacter].Core;
-        public void Init(SpawnCharacters spawn)
+        public CharacterController GetCharacterDefault => _characters[0].Core;
+        public void InitData(SpawnCharacters spawn)
         {
             _spawn = spawn;
         }
-        public void Start()
+        private void Start()
         {
-            for (int i = 0; i < _spawn.CountPositions; i++) {
+            Init();
+        }
+        public void Init()
+        {
+            if (_wasInit)
+                return;
+            _wasInit = true;
+            for (int i = 0; i < _spawn.CountPositions; i++)
+            {
                 InitCharacter(_spawn.GetPosition(i));
             }
         }
         public void InitCharacter(Transform position)
         {
             CharacterControllerBehaviour newItem = Instantiate(_characterControllerBehaviourPrefab, position.position, position.rotation);
+            newItem.Init();
             _characters.Add(newItem);
         }
         public void ChangeCharacter()

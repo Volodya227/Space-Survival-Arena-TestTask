@@ -32,7 +32,7 @@ namespace Systems.Core.DI
 
             _saveSystem = new Save.SaveSystem(new Save.JsonSaveProvider());
             _saveSystem.GetData();//TODO async
-            //Init another systems
+            //InitData another systems
             Init();
         }
         private void Init()

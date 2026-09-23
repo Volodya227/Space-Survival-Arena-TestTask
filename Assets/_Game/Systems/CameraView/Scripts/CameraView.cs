@@ -79,7 +79,7 @@ namespace CameraView
         public void UpdateView(bool setView)
         {
             if (!setView) return;
-            _currentView = -1;
+            _currentView = 1;// was value -1
             ChangeCamera();
         }
         public void SetLockCursor(bool value)

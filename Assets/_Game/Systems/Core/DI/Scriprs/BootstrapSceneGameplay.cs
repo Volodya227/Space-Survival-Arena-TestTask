@@ -40,8 +40,9 @@ namespace Systems.Core.DI
         private void InitCharacters()
         {
             _characterSystem = Instantiate(_characterSystemPrefab);
-            _characterSystem.Init(_spawnCharacters);
+            _characterSystem.InitData(_spawnCharacters);
             _characterSystem.enabled = true;
+            _characterSystem.Init();
         }
         private void InitUI()
         {
@@ -78,6 +79,8 @@ namespace Systems.Core.DI
             _enemySystem = Instantiate(_enemySystemPrefab);
             _enemySystem.GetInitData(_enemySpawnerSavedDataFromScene, null);
             _enemySystem.enabled = true;
+            _enemySystem.Init();
+            _enemySystem.SetTarget(_characterSystem.GetCharacterDefault.TargetAboutSelf);
         }
     }
 }

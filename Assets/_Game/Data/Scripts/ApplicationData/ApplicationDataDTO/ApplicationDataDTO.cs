@@ -4,7 +4,7 @@ namespace Data.ApplicationData.DTO
     public class ApplicationDataDTO
     {
         public ApplicationDataGraphicsDTO graphics;
-        //TODO Input
+        //TODO GetInput
         //TODO Sound
         public ApplicationDataDTO()
         {

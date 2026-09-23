@@ -1,5 +1,5 @@
 using UnityEngine;
-namespace Systems.Enemy.Data
+namespace Systems.Enemy._Data
 {
     [CreateAssetMenu(fileName = "data Enemy", menuName = "Enemy/Data")]
     public class EnemyDataScriptableObject : ScriptableObject, IEnemyData
@@ -9,10 +9,12 @@ namespace Systems.Enemy.Data
         [SerializeField] private int _maxHealth = 250;
         [SerializeField] private float _distanceDamage;
         [SerializeField] private float _damage;
+        [SerializeField] private float _attackCooldown = 15;
         public float Speed => _speed / 3.6f;
         public int MaxHealth => _maxHealth;
         public View.EnemyView Prefab => _gameObject;
         public float DistanceDamage => _distanceDamage;
         public float Damage => _damage;
+        public float AttackCooldown => _attackCooldown;
     }
 }

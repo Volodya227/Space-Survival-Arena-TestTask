@@ -9,8 +9,9 @@ namespace Systems.Character
         public Transform FirstView;
         public Transform ThirdView;
         public Weapon.WeaponController WeaponControllerPrefab;
-        public Data.CharacterData Data;
+        public _Data.CharacterData Data;
         public Transform PivotArmForWeapon;
+        public LayerMask layerMaskResources;
     }
     [System.Serializable]
     public class CharacterController
@@ -20,7 +21,7 @@ namespace Systems.Character
         private Weapon.WeaponController _weaponController;
         private Inputs.CharacterInput _input;
         private Weapon.Inputs.WeaponInput _weaponInput = null;
-        private readonly Data.CharacterData _data;
+        private readonly _Data.CharacterData _data;
         private readonly ContainerData.CharacterContainerData _state;
         public ContainerData.ICharacterContainerData State => _state;
         private readonly CharacterConfig _components;
@@ -30,6 +31,10 @@ namespace Systems.Character
         private readonly Transform _firstView;
         private readonly Transform _thirdView;
         private readonly Transform _pivotArmForWeapon;
+        private readonly Resources.Items.TypeItem _typeItem;
+        private LayerMask _layerMaskResources;
+        private readonly Collider[] _itemsResource = new Collider[32];
+        public Share.TargetForEnemy TargetAboutSelf { get; private set; }
         public Transform FirstView => _firstView;
         public Transform ThirdView => _thirdView;
         public CharacterController(CharacterConfig components, Rigidbody body)
@@ -38,15 +43,18 @@ namespace Systems.Character
             _data = components.Data;
             _body = body;
             _components = components;
-            _state = new ContainerData.CharacterContainerData(_data.MaxHealth);
+            _typeItem = new Resources.Items.TypeItem(id: 0);
+            _state = new ContainerData.CharacterContainerData(_data.MaxHealth, _typeItem);
             _characterView = new ChatacterView(_state, _components.Controller, _components.Animation);
             _movement = new CharacterMovement(_state.movementState, _body, _data);
             _rotation = new CharacterRotation(_body.transform);
             _firstView = _components.FirstView;
             _thirdView = _components.ThirdView;
+            _layerMaskResources = components.layerMaskResources;
             SetWeapon(Object.Instantiate(_components.WeaponControllerPrefab));//FIX
             Respawn();
             SetInput(null);
+            TargetAboutSelf = new Share.TargetForEnemy(State.HealthState, _body.transform);
         }
         public void Dispose()
         {
@@ -60,7 +68,8 @@ namespace Systems.Character
             _movement.SetInput(_input);
             _rotation.SetInput(_input);
             _weaponInput = weaponInput;
-            _weaponController?.SetInput(_weaponInput);
+            if (_weaponController != null)
+                _weaponController.SetInput(_weaponInput);
             UpdateInputState();
             //TODO reset state if input == null
         }
@@ -116,6 +125,25 @@ namespace Systems.Character
             _state.healthState.SetFullHealth();
             _isAlive = true;
             UpdateInputState();
+        }
+        public void DetectResources()
+        {
+            int Count = Physics.OverlapSphereNonAlloc(_body.transform.position, 5, results: _itemsResource, _layerMaskResources);
+            for (int i = 0; i < Count;i++)
+            {
+                if (_itemsResource[i] == null)
+                {
+                    break;
+                }
+                Resources.Items.RealTimeObjectItem type = _itemsResource[i].GetComponent<Resources.Items.RealTimeObjectItem>();
+                if (type != null)
+                {
+                    //TODO (_typeItem.ID == type.ID), when typy of ID will be more than one!
+                    type.Use(out Data.Resources.Items.TypeItemStruct resource);
+                    _typeItem.Add(resource);
+                }
+                _itemsResource[i] = null;
+            }
         }
     }
 }

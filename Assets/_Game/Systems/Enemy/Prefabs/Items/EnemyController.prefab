@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2295300318464229680}
   - component: {fileID: 7624548568505421436}
   - component: {fileID: 986372509382210389}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: EnemyController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -72,3 +72,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90428fad91ff3574c9fc851463efa71f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _layerMaskAttack:
+    serializedVersion: 2
+    m_Bits: 128

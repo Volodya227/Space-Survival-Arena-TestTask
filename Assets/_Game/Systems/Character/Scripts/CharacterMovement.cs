@@ -7,11 +7,11 @@ namespace Systems.Character
         private readonly Rigidbody _body;
         private readonly float _speed;
         private readonly Share.MovementState _state;
-        private readonly Data.CharacterData _data;
+        private readonly _Data.CharacterData _data;
         private Inputs.CharacterInput _input;
         private float _x;
         private float _z;
-        public CharacterMovement(Share.MovementState state, Rigidbody body, Data.CharacterData data)
+        public CharacterMovement(Share.MovementState state, Rigidbody body, _Data.CharacterData data)
         {
             _data = data;
             _speed = _data.Speed;//TODO read from data;

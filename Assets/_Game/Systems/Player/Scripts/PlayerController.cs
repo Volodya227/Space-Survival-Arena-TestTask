@@ -27,14 +27,14 @@ namespace Systems.Player
                 return;
             }
             _character.SetInput(_input.GetCharacterInput, _input.GetWeaponInput);
-            ChangedStateHuman();
+            ChangedStateCharacter();
             //UI
             _systemUI.GetCharacterUI.SetState(_character.State);
             _systemUI.GetWeaponUI.SetState(_character.State?.WeaponContainerData);
             //TODO unbind Weapon from UI when character get or lose weapon
             //now have not this logic because weapon is item character without switch
         }
-        private void ChangedStateHuman()
+        private void ChangedStateCharacter()
         {
             CameraView.ViewData view = _cameraView.GetFirstViewData;
             view.parent = _character.FirstView;

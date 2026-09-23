@@ -23,6 +23,10 @@ namespace Systems.Player
             SetCharacter();
             _input.EventChanageCharacter += SetCharacter;
         }
+        public void SetActiveInput(bool value)
+        {
+            _input.SetActive(value);
+        }
         private void OnDestroy()
         {
             _player.Dispose();

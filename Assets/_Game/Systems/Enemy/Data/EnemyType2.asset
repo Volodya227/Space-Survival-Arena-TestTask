@@ -15,5 +15,6 @@ MonoBehaviour:
   _gameObject: {fileID: 1440058226522401913, guid: c1f2b7cea950aa74ca9ccab0cb563cd6, type: 3}
   _speed: 7
   _maxHealth: 250
-  _distanceDamage: 0
-  _damage: 0
+  _distanceDamage: 5
+  _damage: 90
+  _attackCooldown: 30

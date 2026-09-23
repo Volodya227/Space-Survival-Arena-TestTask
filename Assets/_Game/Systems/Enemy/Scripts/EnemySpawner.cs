@@ -17,9 +17,9 @@ namespace Systems.Enemy
         private readonly System.Collections.Generic.Queue<EnemyController>[] _pool;
         //there can creat a pool! "in stack<> or queue<> save disabled objects"
         private readonly EnemySpawnerSavedDataFromScene _data;
-        private readonly Data.IEnemyData[] _enemyData;
+        private readonly _Data.IEnemyData[] _enemyData;
         private readonly EnemyController _prefab;
-        public EnemySpawner(EnemySpawnerSavedDataFromScene data, Data.IEnemyData[] enemyData, EnemyController prefab)
+        public EnemySpawner(EnemySpawnerSavedDataFromScene data, _Data.IEnemyData[] enemyData, EnemyController prefab)
         {
             _pool = new System.Collections.Generic.Queue<EnemyController>[2] { new(), new() };
             _data = data;
@@ -50,6 +50,7 @@ namespace Systems.Enemy
         {
             EnemyController controller = Object.Instantiate(_prefab, _data.GetPoint(indexSpawnPoint).position, _data.GetPoint(indexSpawnPoint).rotation);
             controller.SetData(_enemyData[type], type);
+            controller.Init();
             controller.enabled = true;
 
             //TODO bind on Kill enemy event

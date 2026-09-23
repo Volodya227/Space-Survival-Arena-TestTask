@@ -3,15 +3,18 @@ namespace Systems.Enemy
 {
     public class EnemySystem : MonoBehaviour
     {
+        private bool _wasInit = false;
+        private AI.EnemyCoreAI _coreAI;
         private Coroutine _tickCoroutine;
         private EnemyController[] _enemyList;
         //initialize by BootstrapScene
         private EnemySpawner _spawner;
         private EnemySpawnerSavedDataFromScene _data;
-        [SerializeField] private Data.IEnemyData[] _enemyData;//Don't see in inspector!
-        [SerializeField] private Data.EnemyDataScriptableObject[] _enemyDataScriptableObject;
+        [SerializeField] private _Data.IEnemyData[] _enemyData;//Don't see in inspector!
+        [SerializeField] private _Data.EnemyDataScriptableObject[] _enemyDataScriptableObject;
 
         [SerializeField] private EnemyController _prefab;
+        [SerializeField] private Resources.ItemFactory _itemFactory = new();
 
         // Spawner, keeping all data from out side, and saving links on all enemies
 
@@ -19,7 +22,8 @@ namespace Systems.Enemy
         //for getting information from Scene by EnemyContainerData, which must be update a distance by raycasts
 
         //need save the EnemyController in Array with max Lenght, and using null value for disabled object which moving to pool in Spawner
-        public void GetInitData(EnemySpawnerSavedDataFromScene data, Data.IEnemyData[] enemyData)
+        private Share.TargetForEnemy _target;
+        public void GetInitData(EnemySpawnerSavedDataFromScene data, _Data.IEnemyData[] enemyData)
         {
             _data = data;
             if (enemyData != null)
@@ -31,10 +35,24 @@ namespace Systems.Enemy
                 _enemyData = _enemyDataScriptableObject;
             }
         }
+        public void SetTarget(Share.TargetForEnemy target)
+        {
+            _target = target;
+            _coreAI.SetTarget(_target);
+        }
         private void Start()
         {
+            Init();
+        }
+        public void Init()
+        {
+            if (_wasInit)
+                return;
+            _wasInit = true;
             _spawner = new EnemySpawner(_data, _enemyData, _prefab);
             _enemyList = new EnemyController[100];
+            _coreAI = new AI.EnemyCoreAI(_enemyList.Length);
+            _coreAI.SetTarget(_target);
             //SpawnGroupEnemy();
             _tickCoroutine = StartCoroutine(TickCoroutine());
         }
@@ -53,6 +71,7 @@ namespace Systems.Enemy
         {
             EnemyController controller = _spawner.GetNewEnemy(indexSpawnPoint, type);
             AddEnemy(controller);
+            controller.SetInput(_coreAI.Bind(controller.GetContainerData));
         }
         private void ClearEnemy(EnemyController controller = null, bool lose = false)
         {
@@ -62,11 +81,16 @@ namespace Systems.Enemy
                     if (_enemyList[i] != null)
                     {
                         _enemyList[i].EventDisableObject -= ReturnToPool;
+                        _enemyList[i].SetInput();
+                        _coreAI.Unbind(_enemyList[i].GetInput);
                         _enemyList[i] = null;
                     }
                 }
                 else if (_enemyList[i] == controller) {
+                    CreateResource(controller.transform.position);
                     controller.EventDisableObject -= ReturnToPool;
+                    _enemyList[i].SetInput();
+                    _coreAI.Unbind(_enemyList[i].GetInput);
                     _enemyList[i] = null;
                     break;
                 }
@@ -113,8 +137,16 @@ namespace Systems.Enemy
             {
                 SpawnGroupEnemy();
 
-                yield return new WaitForSeconds(10f);
+                yield return new WaitForSeconds(30f);
             }
+        }
+        private void CreateResource(Vector3 position, int value = 1)
+        {
+            _itemFactory.CreateItem(position, value: value);
+        }
+        private void FixedUpdate()
+        {
+            _coreAI.Tick();
         }
     }
 }

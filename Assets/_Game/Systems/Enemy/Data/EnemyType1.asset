@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: EnemyType1
   m_EditorClassIdentifier: 
   _gameObject: {fileID: 1440058226522401913, guid: 3bfdf21cf54c5774f9a32dc3755bf847, type: 3}
-  _speed: 9
+  _speed: 10
+  _maxHealth: 250
   _distanceDamage: 0
-  _damage: 0
+  _damage: 70
+  _attackCooldown: 4

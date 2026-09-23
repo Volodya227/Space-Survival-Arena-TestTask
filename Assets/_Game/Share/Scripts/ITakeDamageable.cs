@@ -1,4 +1,4 @@
-namespace Share
+﻿namespace Share
 {
     public interface ITakeDamageable
     {
@@ -13,6 +13,7 @@ namespace Share
     }
     public class MovementState : IMovementState
     {
+        // абстракція не може використовуватись без анімацій, це була спроба відділити ввід сигналів від внутрішнього стану системи, в даному випадку, переміщення.
         public event System.Action EventChangeDirectionMoving;
         public float MoveX { get; private set; }
         public float MoveZ { get; private set; }
