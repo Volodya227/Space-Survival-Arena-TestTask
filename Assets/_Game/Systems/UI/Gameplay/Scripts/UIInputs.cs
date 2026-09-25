@@ -6,7 +6,7 @@ namespace Systems.UI.Gameplay.Inputs
         public event System.Action EventAttackPressed;
         public event System.Action EventAttackReleased;
         public event System.Action EventReloading;
-        public float MoveX { get;}
+        public float MoveX { get; }
         public float MoveZ { get; }
         public void Reset();
         public void SetGameplayMode(bool active);
@@ -82,6 +82,7 @@ namespace Systems.UI.Gameplay.Inputs
         }
         public float MoveX => 0;
         public float MoveZ => 0;
+        public bool ActiveUI { get; }
         public void Reset() { }
         public void SetGameplayMode(bool active) { }
     }

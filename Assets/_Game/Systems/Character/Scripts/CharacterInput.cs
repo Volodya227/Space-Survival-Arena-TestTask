@@ -15,6 +15,13 @@ namespace Systems.Character.Inputs
         {
             //How closed for clild?
             Active = value;
+            if (!Active)
+                Reset();
+        }
+        private void Reset()
+        {
+            MoveX = 0;
+            MoveZ = 0;
         }
     }
 }

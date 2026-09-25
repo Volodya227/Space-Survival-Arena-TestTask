@@ -104,5 +104,9 @@ namespace Systems.Enemy
                 EventDisableObject?.Invoke(this);
             }
         }
+        public void DeathUnitBySystem()
+        {
+            gameObject.SetActive(false);
+        }
     }
 }

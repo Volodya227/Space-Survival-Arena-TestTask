@@ -10,9 +10,9 @@ namespace Systems.Player.Inputs
         {
             EventEscapeActivate();
         }
-        public bool EventAskActiveUIActivation()
+        public void EventAskActiveUIActivation()
         {
-            return EventAskActiveUIActivate();
+            EventAskActiveUIActivate();
         }
     }
 }

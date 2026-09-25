@@ -17,7 +17,8 @@ namespace Systems.Character
         private readonly List<CharacterControllerBehaviour> _characters = new();
         private int _currentCharacter = -1;
         public CharacterController GetCharacter => _characters[_currentCharacter].Core;
-        public CharacterController GetCharacterDefault => _characters[0].Core;
+        public CharacterController GetCharacterByIndex(int i) => _characters[i].Core;
+        public int GetCharacterCount => _characters.Count;
         public void InitData(SpawnCharacters spawn)
         {
             _spawn = spawn;
@@ -50,6 +51,14 @@ namespace Systems.Character
             }
             _currentCharacter++;
             _currentCharacter %= _characters.Count;
+        }
+        public void Restart()
+        {
+            for (int i = 0; i < _spawn.CountPositions; i++)
+            {
+                _characters[i].transform.SetPositionAndRotation(_spawn.GetPosition(i).position, Quaternion.identity);
+                _characters[i].Core.Respawn();
+            }
         }
     }
 }

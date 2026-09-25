@@ -18,7 +18,7 @@ namespace Systems.Core.Save
         {
             if (data == null) return;
             File.WriteAllText(AppPath, JsonUtility.ToJson(data, true));
-            Debug.Log($"[SaveSystem] Save folder: {_root}");
+            //Debug.Log($"[SaveSystem] Save folder: {_root}");
         }
         public bool TryLoadApplicationData(out Data.ApplicationData.DTO.ApplicationDataDTO data)
         {

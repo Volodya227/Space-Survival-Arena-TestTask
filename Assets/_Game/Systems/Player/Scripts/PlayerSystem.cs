@@ -18,7 +18,7 @@ namespace Systems.Player
         private void Start()
         {
             _player = new PlayerController(_input, _cameraView, _UI);
-            _input.SetUI(_UI.GetInput);
+            _input.SetUIInput(_UI.GetInput);
             _input.SetActive(true);
             SetCharacter();
             _input.EventChanageCharacter += SetCharacter;
@@ -30,7 +30,7 @@ namespace Systems.Player
         private void OnDestroy()
         {
             _player.Dispose();
-            _input.SetUI(null);
+            _input.SetUIInput(null);
             _input.SetActive(false);
             _input.EventChanageCharacter -= SetCharacter;
             _input.Dispose();

@@ -20,6 +20,7 @@ namespace Systems.Core.DI
         private CameraView.CameraView _cameraView;
         [SerializeField] private EventSystem _eventSystem;
         private IBootstrapEvents _bootstrapEvents;
+        private Gameplay.GameplaySystem _gameplaySystem;
         private void Awake()
         {
             if(Bootstrap.Get != null)
@@ -32,10 +33,12 @@ namespace Systems.Core.DI
             InitCamera();
             InitPlayerSystem();
             InitEnemySystem();
+            _gameplaySystem = new Gameplay.GameplaySystem(_enemySystem, _playerSystem, _UI, _characterSystem, _characterSystem.GetCharacterByIndex(0).TargetAboutSelf);
         }
         private void OnDestroy()
         {
             _UI.GetMenuEvents.EventExitScene -= ReturnTOMainMenu;
+            _UI.GetEndMenuEvents.EventExitScene -= ReturnTOMainMenu;
         }
         private void InitCharacters()
         {
@@ -49,6 +52,7 @@ namespace Systems.Core.DI
             _UI = Instantiate(_UIPrefab);
             _UI.Init(Bootstrap.Get?.ApplicationData);
             _UI.GetMenuEvents.EventExitScene += ReturnTOMainMenu;
+            _UI.GetEndMenuEvents.EventExitScene += ReturnTOMainMenu;
         }
         private void InitInput()
         {
@@ -80,7 +84,7 @@ namespace Systems.Core.DI
             _enemySystem.GetInitData(_enemySpawnerSavedDataFromScene, null);
             _enemySystem.enabled = true;
             _enemySystem.Init();
-            _enemySystem.SetTarget(_characterSystem.GetCharacterDefault.TargetAboutSelf);
+            _enemySystem.SetTarget(_characterSystem.GetCharacterByIndex(0).TargetAboutSelf);
         }
     }
 }

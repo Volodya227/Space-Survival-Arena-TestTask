@@ -19,12 +19,12 @@ namespace Systems.Player.Inputs
         public bool Active { get; private set; } = false;
         protected UnityEngine.EventSystems.EventSystem _eventSystem;
         protected bool _dragMouse;
+        private UI.Gameplay.IUIState _stateUI;
         protected void Awake()
         {
             _playerInputCommands = new PlayerInputCommandsOld();
-            SetUI(null);
+            SetUIInput(null);
             _cameraViewInput.EventChangeCameraView += SetViewToCharacter;
-            _playerInputToUI.EventSetActiveUI += SetActiveUIMenu;
             SetActiveUIInput(false);//correctly set state
         }
         private void OnEnable()
@@ -37,8 +37,9 @@ namespace Systems.Player.Inputs
         }
         private void OnDestroy()
         {
-            _playerInputToUI.EventSetActiveUI -= SetActiveUIMenu;
             _cameraViewInput.EventChangeCameraView -= SetViewToCharacter;
+            SetUIInput(null, true);
+            SetUI();
             _playerInputCommands.Dispose();
         }
         public void SetEventSystem(UnityEngine.EventSystems.EventSystem eventSystem)
@@ -50,23 +51,27 @@ namespace Systems.Player.Inputs
             _isUI = value;
             _cameraViewInput.SetMouseLockMode(!_isUI);
             if (_bindedUIInput)
-                UnbindUI();
+                UnbindUIInput();
             if (_isUI)
-                BindUI();
-            _inputUI?.SetGameplayMode(_isUI);
-            ResetInput();
+            {
+                BindUIInput();
+                _inputUI.SetGameplayMode(_isUI);
+                ResetInput();
+            }
         }
         private void ResetInput()
         {
             _dragMouse = false;
             _weaponInput?.InputAttackReleased();
-            _inputUI.Reset();
+            _inputUI?.Reset();
             SetViewToCharacter();
         }
         public void Dispose()
         {
             _eventSystem = null;
             SetActiveUIInput(false);
+            SetUIInput(null, true);//input can use between scenes
+            SetUI();
         }
         private void SetViewToCharacter()
         {
@@ -80,11 +85,21 @@ namespace Systems.Player.Inputs
             else
                 _cameraViewInput.SetMouseLockMode(false);
         }
-        public void SetUI(UI.Gameplay.Inputs.IUIInputs inputUI)
+        public void SetUIInput(UI.Gameplay.Inputs.IUIInputs inputUI, bool lose = false)
         {
-            UnbindUI();
+            UnbindUIInput();
             _inputUI = inputUI ?? _inputUINullRef;
+            if (lose)
+                _inputUI = null;
             SetActiveUIInput(_isUI);
+        }
+        public void SetUI(UI.Gameplay.IUIState stateUI = null)
+        {
+            if (_stateUI != null)
+                UnbindUI();
+            _stateUI = stateUI;
+            if (_stateUI != null)
+                BindUI();
         }
         protected void SetCameraViewInput(float x, float y)
         {
@@ -95,24 +110,32 @@ namespace Systems.Player.Inputs
             EventChanageCharacter?.Invoke();
         }
         //TODO bind event from UI
-        private void BindUI()
+        private void BindUIInput()
         {
             if (!_isUI) return;
-            _bindedUIInput = true;
             if (_inputUI == null) return;
+            _bindedUIInput = true;
             _inputUI.EventAttackPressed += ActivateEventAttackPressed;
             _inputUI.EventAttackReleased += ActivateEventAttackReleased;
             _inputUI.EventReloading += ActivateEventReload;
             _inputUI.EventOpenMenu += OpenMenu;
         }
-        private void UnbindUI()
+        private void BindUI()
         {
-            _bindedUIInput = false;
+            _stateUI.EventChangeActiveUI += UpdateInputStateByUI;
+        }
+        private void UnbindUIInput()
+        {
             if (_inputUI == null) return;
+            _bindedUIInput = false;
             _inputUI.EventAttackPressed -= ActivateEventAttackPressed;
             _inputUI.EventAttackReleased -= ActivateEventAttackReleased;
             _inputUI.EventReloading -= ActivateEventReload;
             _inputUI.EventOpenMenu -= OpenMenu;
+        }
+        private void UnbindUI()
+        {
+            _stateUI.EventChangeActiveUI -= UpdateInputStateByUI;
         }
         protected void ActivateEventAttackPressed()
         {
@@ -131,7 +154,11 @@ namespace Systems.Player.Inputs
         }
         protected void SetActiveUIMenu()
         {
-            if (_playerInputToUI.EventAskActiveUIActivation())
+            _playerInputToUI.EventAskActiveUIActivation();
+        }
+        private void UpdateInputStateByUI()
+        {
+            if(_stateUI.ActiveUI)
             {
                 //ChangeCameraDrag();
                 SetActive(false);

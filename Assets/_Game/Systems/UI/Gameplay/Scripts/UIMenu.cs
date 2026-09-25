@@ -2,35 +2,33 @@ using UnityEngine;
 using UnityEngine.UI;
 namespace Systems.UI.Gameplay
 {
-    [System.Serializable]
-    public class UIMenu : IMenuEvents
+    public abstract class UIMenuBase : IMenuEvents
     {
         public event System.Action EventExitScene;
-        private bool _active = false;
+        protected bool _active = false;
         public bool Active => _active;
-        [SerializeField] private GameObject _panel;
-        [SerializeField] private Button _continue;
-        [SerializeField] private Button _settings;
-        [SerializeField] private Button _returnMainMenu;
+        [SerializeField] protected GameObject _panel;
+        [SerializeField] protected Button _settings;
+        [SerializeField] protected Button _returnMainMenu;
+        [SerializeField] protected Settings.UISettingsSystem _settingsSystemPrefab;
+        protected Settings.UISettingsSystem _settingsSystem = null;
+        protected Data.ApplicationData.IApplicationData _applicationData = null;
+        private UIState _stateUI;
 
-        [SerializeField] private Settings.UISettingsSystem _settingsSystemPrefab;
-        private Settings.UISettingsSystem _settingsSystem = null;
-        private Data.ApplicationData.IApplicationData _applicationData = null;
-
-        private Inputs.InputToUI _input;
-
-        //TODO activate menu from PlayerInput
-        public void Init(Data.ApplicationData.IApplicationData applicationData = null)
+        protected Inputs.InputToUI _input;
+        protected abstract void InitLocal();
+        protected abstract void DisposeLocal();
+        public void Init(Data.ApplicationData.IApplicationData applicationData = null, UIState stateUI = null)
         {
+            _stateUI = stateUI;
             HideMenu();
             _settings.onClick.AddListener(OpenSettings);
-            _continue.onClick.AddListener(Continue);
             _returnMainMenu.onClick.AddListener(Exit);
             _applicationData = applicationData;
+            InitLocal();
         }
         public void Dispose()
         {
-            _continue.onClick.RemoveListener(Continue);
             _settings.onClick.RemoveListener(OpenSettings);
             _returnMainMenu.onClick.RemoveListener(Exit);
             if (_settingsSystem != null)
@@ -38,6 +36,7 @@ namespace Systems.UI.Gameplay
                 _settingsSystem.EventDisable -= ShowMenu;
             }
             _active = false;
+            DisposeLocal();
         }
         private void Exit()
         {
@@ -67,35 +66,77 @@ namespace Systems.UI.Gameplay
         }
         public void SetInput(Inputs.InputToUI input)
         {
-            if (_input != null) {
-                _input.EventEscape -= ChangeActive;
+            if (_input != null)
+            {
+                UnbindInput();
             }
             _input = input;
             if (_input != null)
             {
-                _input.EventEscape += ChangeActive;
+                BindInput();
             }
         }
-        private void ChangeActive()
+        protected virtual void BindInput() { }
+        protected virtual void UnbindInput() { }
+        protected bool ChangeActiveBase(bool onlyHide = false)
         {
             if (_active)
             {
-                if (_settingsSystem != null) {
+                if (_settingsSystem != null)
+                {
                     if (_settingsSystem.Active)
                     {
                         _settingsSystem.CloseSettings();
-                        return;
+                        return false;
                     }
                 }
                 HideMenu();
             }
             else
-                ShowMenu();
+            {
+                if (!onlyHide)
+                    ShowMenu();
+            }
+            _stateUI?.ChangeActiveUI(Active);
+            return true;
+        }
+    }
+    [System.Serializable]
+    public class UIMenu : UIMenuBase
+    {
+        private bool _isEnd;
+        public void SetIsEnd(bool value)
+        {
+            _isEnd = value;
+            if (_isEnd)
+                ChangeActiveBase(true);
+        }
+        [SerializeField] private Button _continue;
+        protected override void InitLocal()
+        {
+            _continue.onClick.AddListener(Continue);
+        }
+        protected override void DisposeLocal()
+        {
+            _continue.onClick.RemoveListener(Continue);
+        }
+        protected override void BindInput()
+        {
+            _input.EventEscape += ChangeActive;
+        }
+        protected override void UnbindInput()
+        {
+            _input.EventEscape -= ChangeActive;
+        }
+        private void ChangeActive()
+        {
+            if (_isEnd)
+                return;
+            ChangeActiveBase();
         }
         private void Continue()
         {
-            HideMenu();
-            _input?.EventSetActiveUIActivate();
+            ChangeActiveBase(true);
         }
     }
 }

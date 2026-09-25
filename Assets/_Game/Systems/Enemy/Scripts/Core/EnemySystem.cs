@@ -3,6 +3,7 @@ namespace Systems.Enemy
 {
     public class EnemySystem : MonoBehaviour
     {
+        private bool _running = true;
         private bool _wasInit = false;
         private AI.EnemyCoreAI _coreAI;
         private Coroutine _tickCoroutine;
@@ -49,6 +50,7 @@ namespace Systems.Enemy
             if (_wasInit)
                 return;
             _wasInit = true;
+            _running = true;
             _spawner = new EnemySpawner(_data, _enemyData, _prefab);
             _enemyList = new EnemyController[100];
             _coreAI = new AI.EnemyCoreAI(_enemyList.Length);
@@ -60,6 +62,17 @@ namespace Systems.Enemy
         {
             ClearEnemy(null, true);
             StopCoroutine(_tickCoroutine);
+        }
+        public void StopGame()
+        {
+            _running = false;
+            StopCoroutine(_tickCoroutine);
+        }
+        public void Restart()
+        {
+            _running = true;
+            ClearEnemy(null, true, true);
+            _tickCoroutine = StartCoroutine(TickCoroutine());
         }
         private void ReturnToPool(EnemyController controller)
         {
@@ -73,8 +86,9 @@ namespace Systems.Enemy
             AddEnemy(controller);
             controller.SetInput(_coreAI.Bind(controller.GetContainerData));
         }
-        private void ClearEnemy(EnemyController controller = null, bool lose = false)
+        private void ClearEnemy(EnemyController controller = null, bool lose = false, bool returnToPool = false)
         {
+            //must rewrite this method on three another!
             for (int i = 0; i < _enemyList.Length; i++) {
                 if (lose)
                 {
@@ -83,12 +97,18 @@ namespace Systems.Enemy
                         _enemyList[i].EventDisableObject -= ReturnToPool;
                         _enemyList[i].SetInput();
                         _coreAI.Unbind(_enemyList[i].GetInput);
+                        if (returnToPool)
+                        {
+                            _enemyList[i].DeathUnitBySystem();
+                            _spawner.ReturnDisposedEnemy(_enemyList[i]);
+                        }
+                        _coreAI.Unbind(_enemyList[i].GetInput);
                         _enemyList[i] = null;
                     }
                 }
                 else if (_enemyList[i] == controller) {
-                    CreateResource(controller.transform.position);
-                    controller.EventDisableObject -= ReturnToPool;
+                    CreateResource(_enemyList[i].transform.position);
+                    _enemyList[i].EventDisableObject -= ReturnToPool;
                     _enemyList[i].SetInput();
                     _coreAI.Unbind(_enemyList[i].GetInput);
                     _enemyList[i] = null;
@@ -126,6 +146,9 @@ namespace Systems.Enemy
         }
         private void SpawnGroupEnemy()
         {
+            if (!_running)
+                return;
+
             int freeCount = Mathf.Min(FreeCount(), 10);//int groupSize = 10;
             for (int i = 0; i < freeCount; i++) {
                 CreateNewEnemy(i);
@@ -137,7 +160,7 @@ namespace Systems.Enemy
             {
                 SpawnGroupEnemy();
 
-                yield return new WaitForSeconds(30f);
+                yield return new WaitForSeconds(4f);
             }
         }
         private void CreateResource(Vector3 position, int value = 1)
