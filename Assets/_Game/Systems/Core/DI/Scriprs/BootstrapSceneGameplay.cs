@@ -39,6 +39,8 @@ namespace Systems.Core.DI
         {
             _UI.GetMenuEvents.EventExitScene -= ReturnTOMainMenu;
             _UI.GetEndMenuEvents.EventExitScene -= ReturnTOMainMenu;
+            
+            _gameplaySystem.Dispose();
         }
         private void InitCharacters()
         {

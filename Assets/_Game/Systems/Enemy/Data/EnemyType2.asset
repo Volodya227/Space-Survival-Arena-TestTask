@@ -17,4 +17,4 @@ MonoBehaviour:
   _maxHealth: 250
   _distanceDamage: 5
   _damage: 90
-  _attackCooldown: 30
+  _attackCooldown: 8
