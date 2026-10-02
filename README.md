@@ -2,9 +2,9 @@
 
 This Project is a prototype for basic core loop from scratch:
 
-Top down view with first, third views change by input comand
+Top down view with first, third views change by input command
 
-the project has bug when active topDownView and UI input, I Need rewrite hering input from tauch.
+the project has bug when active topDownView and UI input, I Need rewrite hering input from touch.
 
 basic moving and shooter.
 
