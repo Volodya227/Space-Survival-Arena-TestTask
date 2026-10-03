@@ -25,7 +25,6 @@ namespace Systems.Player.Inputs
                 }
                 if (_cameraViewInput.Active)
                 {
-
                     _playerInputCommands.Tick();
                     if (_dragMouse)
                     {                        

@@ -50,14 +50,14 @@ namespace Systems.Player.Inputs
         {
             _isUI = value;
             _cameraViewInput.SetMouseLockMode(!_isUI);
+            _inputUI.SetGameplayMode(_isUI);
             if (_bindedUIInput)
                 UnbindUIInput();
             if (_isUI)
             {
                 BindUIInput();
-                _inputUI.SetGameplayMode(_isUI);
-                ResetInput();
             }
+            ResetInput();
         }
         private void ResetInput()
         {
