@@ -14,5 +14,9 @@ namespace Systems.Player.Inputs
         public void SetMouseLockMode(bool value) {
             ChangeLockMouseMode(value);
         }
+        public void SetTopDownViewInput(UnityEngine.Vector3 value)
+        {
+            MousePosition = value;
+        }
     }
 }

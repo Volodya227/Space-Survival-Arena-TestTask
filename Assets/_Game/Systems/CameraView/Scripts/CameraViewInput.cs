@@ -10,6 +10,8 @@ namespace CameraView.Inputs
         private float _cameraRotationY;
         protected float _mouseXMove;
         protected float _mouseYMove;
+        public bool ActiveTopDownViewInput { get; protected set; }
+        public UnityEngine.Vector3 MousePosition {  get; protected set; }
         public bool LockMouseMode { get; private set; }
         public float MouseXMove => _mouseXMove;
         public float MouseYMove => _mouseYMove;

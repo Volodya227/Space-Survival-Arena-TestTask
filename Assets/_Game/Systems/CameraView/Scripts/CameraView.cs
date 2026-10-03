@@ -31,6 +31,7 @@ namespace CameraView
         private float _mouseX = 0;
         private float _mouseY = 0;
         public float mouseSensitivity = 2;
+        private Vector3 _mousePosition;
         [SerializeField] private Camera _camera;
         [SerializeField] private Transform _distance;
         private readonly ViewData[] _viewData = {
@@ -142,7 +143,10 @@ namespace CameraView
             if (IsTopDownView)
             {
                 SetInput(50, 45, 0);
-                Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
+                if (_mousePosition == _input.MousePosition)
+                    return;
+                _mousePosition = _input.MousePosition;
+                Ray ray = _camera.ScreenPointToRay(_mousePosition);// Input.mousePosition
                 if (Physics.Raycast(ray, out RaycastHit hit))
                 {
                     _positionInput = hit.point;
