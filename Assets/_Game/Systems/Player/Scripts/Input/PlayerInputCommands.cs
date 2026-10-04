@@ -1,9 +1,11 @@
-using Unity.VisualScripting;
-
 namespace Systems.Player.Inputs
 {
     public abstract class PlayerInputCommands
     {
+        protected UnityEngine.EventSystems.EventSystem _eventSystem;
+        public void SetEventSystem(UnityEngine.EventSystems.EventSystem eventSystem) {
+            _eventSystem = eventSystem;
+        }
         public abstract int PointerId { get; }
         public abstract bool GetEscape { get; }
         public abstract float GetMoveX { get; }

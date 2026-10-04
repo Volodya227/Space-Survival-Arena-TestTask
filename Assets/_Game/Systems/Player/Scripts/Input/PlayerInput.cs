@@ -45,6 +45,7 @@ namespace Systems.Player.Inputs
         public void SetEventSystem(UnityEngine.EventSystems.EventSystem eventSystem)
         {
             _eventSystem = eventSystem;
+            _playerInputCommands.SetEventSystem(_eventSystem);
         }
         public void SetActiveUIInput(bool value)
         {

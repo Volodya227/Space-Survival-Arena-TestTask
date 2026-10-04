@@ -12,6 +12,7 @@ namespace Systems.Player.Inputs {
 
         private bool _up;
         private bool _down;
+
         public override bool GetEscape => Input.GetKeyDown(KeyCode.Escape);
         public override float GetMoveX => Input.GetAxis("Horizontal");
         public override float GetMoveZ => Input.GetAxis("Vertical");
@@ -44,7 +45,8 @@ namespace Systems.Player.Inputs {
                 {
                     if (touch.phase != TouchPhase.Began)
                         continue;
-                    _pointerId = touch.touchId;
+                    if (_eventSystem.IsPointerOverGameObject(touch.touchId))
+                        continue; _pointerId = touch.touchId;
                     _position = touch.screenPosition;
                     _delta = Vector2.zero;
                     _down = true;
