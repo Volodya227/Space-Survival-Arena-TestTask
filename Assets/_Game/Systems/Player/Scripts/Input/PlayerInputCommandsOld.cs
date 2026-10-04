@@ -46,7 +46,8 @@ namespace Systems.Player.Inputs {
                     if (touch.phase != TouchPhase.Began)
                         continue;
                     if (_eventSystem.IsPointerOverGameObject(touch.touchId))
-                        continue; _pointerId = touch.touchId;
+                        continue;
+                    _pointerId = touch.touchId;
                     _position = touch.screenPosition;
                     _delta = Vector2.zero;
                     _down = true;
