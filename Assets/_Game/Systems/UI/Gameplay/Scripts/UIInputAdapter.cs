@@ -16,14 +16,14 @@ namespace Systems.UI.Gameplay.Inputs
         [SerializeField] private RectTransform _fireButton;
         [Header("Reload Button")]
         [SerializeField] private RectTransform _reloadButton;
-        private ReloadButtonRole _reload;
+        private ButtonRole _reload;
         [SerializeField] private Canvas _canvas;
         private Camera _uiCamera;
 
         private UIInputs _inputs;
 
         private JoystickRole _joystick;
-        private FireButtonRole _fire;
+        private ButtonRole _fire;
         [SerializeField] private Button _buttonOpenMenu;
 
         public void Init(UIInputs inputs)
@@ -37,26 +37,44 @@ namespace Systems.UI.Gameplay.Inputs
                 _inputs.EventChangeActive += SetActivate;
             }
             SetActivate();
-            _joystick = new JoystickRole(_joystickFrame, _joystickHandle, _radius, _inputs, _uiCamera);
-            _fire = new FireButtonRole(_fireButton, _inputs, _uiCamera);
-            _reload = new ReloadButtonRole(_reloadButton, _inputs, _uiCamera);
+            _joystick = new JoystickRole(_joystickFrame, _joystickHandle, _radius, _uiCamera);
+            _fire = new ButtonRole(_fireButton, _uiCamera);
+            _reload = new ButtonRole(_reloadButton, _uiCamera);
+
+            _fire.EventDown += _inputs.SignalAttackPressed;
+            _fire.EventUp += _inputs.SignalAttackReleased;
+
+            _reload.EventDown += _inputs.SignalReloading;
+            _joystick.EventInput += _inputs.SignalMove;
         }
         private void Awake()
         {
             _uiCamera = _canvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : _canvas.worldCamera;
-            if (_inputs != null)
+            if (_inputs == null)
+                return;
+            if (_buttonOpenMenu != null)
+            {
                 _buttonOpenMenu.onClick.AddListener(_inputs.OpenMenu);
+            }
         }
         private void OnDestroy()
         {
-            if(_inputs == null) return;
+            _joystick.Cancel();
+            if (_inputs == null)
+                return;
             _inputs.EventChangeActive -= SetActivate;
-            if (_inputs != null)
+            _fire.EventDown -= _inputs.SignalAttackPressed;
+            _fire.EventUp -= _inputs.SignalAttackReleased;
+
+            _reload.EventDown -= _inputs.SignalReloading;
+            _joystick.EventInput -= _inputs.SignalMove;
+            if (_buttonOpenMenu != null)
                 _buttonOpenMenu.onClick.RemoveListener(_inputs.OpenMenu);
         }
         public void OnPointerDown(PointerEventData e)
         {
-            if(!_active) return;
+            if(!_active)
+                return;
             if (_joystick.IsTarget(e))
                 _joystick.OnPointerDown(e);
             else if (_fire.IsTarget(e))
@@ -66,20 +84,24 @@ namespace Systems.UI.Gameplay.Inputs
         }
         public void OnDrag(PointerEventData e)
         {
-            if (!_active) return;
+            if (!_active)
+                return;
             _joystick.OnDrag(e);
         }
         public void OnPointerUp(PointerEventData e)
         {
-            if (!_active) return;
+            if (!_active)
+                return;
             _joystick.OnPointerUp(e);
             _fire.OnPointerUp(e);
         }
         private void SetActivate()
         {
-            if (_inputs == null) return;
+            if (_inputs == null)
+                return;
             _active = _inputs.Active;
             _inputObject.SetActive(_active);
+            _joystick?.Cancel();
         }
     }
 }
