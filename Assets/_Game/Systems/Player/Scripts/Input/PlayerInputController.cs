@@ -35,17 +35,8 @@ namespace Systems.Player.Inputs
                     {
                         if (_playerInputCommands.GetMouseDown || !_isUI)
                         {
-                            int index = _playerInputCommands.PointerId;
-                            if(index < 0)
-                            {
-                                if (!_eventSystem.IsPointerOverGameObject())
-                                    _dragMouse = true;
-                            }
-                            else
-                            {
-                                if (!_eventSystem.IsPointerOverGameObject(index))
-                                    _dragMouse = true;
-                            }
+                            if (!_eventSystem.IsPointerOverGameObject(_playerInputCommands.PointerId))
+                                _dragMouse = true;
                         }
                     }
                     if (_dragMouse)
