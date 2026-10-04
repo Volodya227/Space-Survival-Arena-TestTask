@@ -86,6 +86,7 @@ namespace Systems.UI.Gameplay.Inputs
         {
             if (!_active)
                 return;
+            if(_joystick.PointerId == e.pointerId)
             _joystick.OnDrag(e);
         }
         public void OnPointerUp(PointerEventData e)
@@ -94,6 +95,7 @@ namespace Systems.UI.Gameplay.Inputs
                 return;
             _joystick.OnPointerUp(e);
             _fire.OnPointerUp(e);
+            _reload.OnPointerUp(e);
         }
         private void SetActivate()
         {
