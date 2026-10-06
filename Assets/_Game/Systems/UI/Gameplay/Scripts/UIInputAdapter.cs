@@ -86,8 +86,7 @@ namespace Systems.UI.Gameplay.Inputs
         {
             if (!_active)
                 return;
-            if(_joystick.PointerId == e.pointerId)
-                _joystick.OnDrag(e);
+            _joystick.OnDrag(e);
         }
         public void OnPointerUp(PointerEventData e)
         {

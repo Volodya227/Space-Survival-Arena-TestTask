@@ -5,7 +5,8 @@ namespace Systems.UI.Gameplay.Inputs
     public sealed class JoystickRole
     {
         public event System.Action<float, float> EventInput;
-        private int _pointerId = -1;
+        private int _pointerId = DefaultId;
+        private const int DefaultId = int.MinValue;
         public int PointerId => _pointerId;
         private readonly RectTransform _frame;
         private readonly RectTransform _handle;
@@ -31,7 +32,7 @@ namespace Systems.UI.Gameplay.Inputs
         }
         public void OnPointerDown(PointerEventData e)
         {
-            if (_pointerId >= 0)
+            if (_pointerId != DefaultId)
                 return;
             if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(_frame, e.position, _uiCamera, out var localPoint))
                 return;
@@ -74,7 +75,7 @@ namespace Systems.UI.Gameplay.Inputs
         private void Release()
         {
             Debug.Log("Poiner Up" + _pointerId);
-            _pointerId = -1;
+            _pointerId = DefaultId;
             if (_useReset)
             {
                 _handle.anchoredPosition = Vector2.zero;

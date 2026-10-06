@@ -5,10 +5,12 @@ using TouchPhase = UnityEngine.InputSystem.TouchPhase;
 namespace Systems.Player.Inputs {
     public class PlayerInputCommandsOld : PlayerInputCommands
     {
-        private int _pointerId = -1;
+        private int _pointerId = DefaultId;
+        private const int DefaultId = int.MinValue;
         private Vector2 _position;
         private Vector2 _delta;
         public override int PointerId => _pointerId;
+        public override bool PointerIdIsDefault => _pointerId == DefaultId;
 
         private bool _up;
         private bool _down;
@@ -18,9 +20,9 @@ namespace Systems.Player.Inputs {
         public override float GetMoveZ => Input.GetAxis("Vertical");
         public override bool GetMouseDown => Input.GetKeyDown(KeyCode.Mouse0) || _down;
         public override bool GetMouseUp => Input.GetKeyUp(KeyCode.Mouse0) || _up;
-        public override float GetMoveMouseX => _pointerId >= 0 ? _delta.x : Input.GetAxis("Mouse X");
-        public override float GetMoveMouseY => _pointerId >= 0 ? _delta.y : Input.GetAxis("Mouse Y");
-        public override Vector3 MousePosition => _pointerId >= 0 ? _position : Input.mousePosition;
+        public override float GetMoveMouseX => _pointerId != DefaultId ? _delta.x : Input.GetAxis("Mouse X");
+        public override float GetMoveMouseY => _pointerId != DefaultId ? _delta.y : Input.GetAxis("Mouse Y");
+        public override Vector3 MousePosition => _pointerId != DefaultId ? _position : Input.mousePosition;
         public override bool GetReloadPressed => Input.GetKeyDown(KeyCode.R);
         public override bool GetChangeViewKeeping => Input.GetKeyDown(KeyCode.V);//TODO delete "Down"
         public override bool GetChangeActiveUI => Input.GetKeyDown(KeyCode.U);
@@ -39,34 +41,37 @@ namespace Systems.Player.Inputs {
             _up = false;
             _delta = Vector2.zero;
 
-            if (_pointerId < 0)
+            if (_pointerId == DefaultId)
             {
                 foreach (var touch in Touch.activeTouches)
                 {
-                    if (touch.phase != TouchPhase.Began)
-                        continue;
-                    if (_eventSystem.IsPointerOverGameObject(touch.touchId))
-                        continue;
-                    _pointerId = touch.touchId;
-                    _position = touch.screenPosition;
-                    _delta = Vector2.zero;
-                    _down = true;
-                    break;
+                    if (touch.phase == TouchPhase.Began)
+                    {
+                        if (!_eventSystem.IsPointerOverGameObject(touch.touchId))
+                        {
+                            _pointerId = touch.touchId;
+                            _position = touch.screenPosition;
+                            _delta = Vector2.zero;
+                            _down = true;
+                            break;
+                        }
+                    }
                 }
                 return;
             }
             foreach (var touch in Touch.activeTouches)
             {
-                if (touch.touchId != _pointerId)
-                    continue;
-                _position = touch.screenPosition;
-                _delta = touch.delta;
-                if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
+                if (touch.touchId == _pointerId)
                 {
-                    _up = true;
-                    _pointerId = -1;
+                    _position = touch.screenPosition;
+                    _delta = touch.delta;
+                    if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
+                    {
+                        _up = true;
+                        _pointerId = DefaultId;
+                    }
+                    break;
                 }
-                break;
             }
         }
     }

@@ -6,7 +6,8 @@ namespace Systems.UI.Gameplay.Inputs
     {
         public event System.Action EventDown;
         public event System.Action EventUp;
-        private int _pointerId = -1;
+        private int _pointerId = DefaultId;
+        private const int DefaultId = int.MinValue;
         private readonly RectTransform _button;
         private readonly Camera _uiCamera;
         public ButtonRole(RectTransform button, Camera uiCamera)
@@ -20,23 +21,21 @@ namespace Systems.UI.Gameplay.Inputs
         }
         public void OnPointerDown(PointerEventData e)
         {
-            if (_pointerId >= 0)
+            if (_pointerId != DefaultId)
                 return;
             _pointerId = e.pointerId;
             EventDown?.Invoke();
         }
         public void OnPointerUp(PointerEventData e)
         {
-            if (e.pointerId != _pointerId)
-                return;
-            _pointerId = -1;
-            EventUp?.Invoke();
+            if (e.pointerId == _pointerId)
+                Cancel();
         }
         public void Cancel()
         {
-            if (_pointerId < 0)
+            if (_pointerId == DefaultId)
                 return;
-            _pointerId = -1;
+            _pointerId = DefaultId;
             EventUp?.Invoke();
         }
     }

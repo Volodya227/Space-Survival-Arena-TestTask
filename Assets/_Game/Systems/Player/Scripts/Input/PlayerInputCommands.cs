@@ -7,6 +7,7 @@ namespace Systems.Player.Inputs
             _eventSystem = eventSystem;
         }
         public abstract int PointerId { get; }
+        public abstract bool PointerIdIsDefault { get; }
         public abstract bool GetEscape { get; }
         public abstract float GetMoveX { get; }
         public abstract float GetMoveZ { get; }
