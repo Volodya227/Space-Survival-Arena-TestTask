@@ -37,7 +37,7 @@ namespace Systems.UI.Gameplay.Inputs
                 return;
 
             _pointerId = e.pointerId;
-
+            Debug.Log("Poiner Down" + _pointerId);
             if (_useReset)
             {
                 _handle.anchoredPosition = Vector2.zero;
@@ -71,6 +71,7 @@ namespace Systems.UI.Gameplay.Inputs
         }
         private void Release()
         {
+            Debug.Log("Poiner Up" + _pointerId);
             _pointerId = -1;
             if (_useReset)
             {
