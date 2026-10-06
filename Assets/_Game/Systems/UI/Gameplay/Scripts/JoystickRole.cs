@@ -53,8 +53,10 @@ namespace Systems.UI.Gameplay.Inputs
         {
             if (e.pointerId != _pointerId)
                 return;
+            Debug.Log("Poiner Drag" + _pointerId);
             if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(_frame, e.position, _uiCamera, out var currentLocal))
                 return;
+            Debug.Log("Poiner Drag use" + _pointerId);
             Vector2 delta = currentLocal - _startLocalPoint;
             if (!_useX)
                 delta.x = 0;
