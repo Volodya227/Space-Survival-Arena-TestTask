@@ -1,9 +1,5 @@
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.EnhancedTouch;
-using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
-using TouchPhase = UnityEngine.InputSystem.TouchPhase;
 namespace Systems.Player.Inputs {
     public class PlayerInputCommandsOld : PlayerInputCommands
     {
@@ -44,14 +40,15 @@ namespace Systems.Player.Inputs {
 
             if (_pointerId == DefaultId)
             {
-                foreach (var touch in Touch.activeTouches)
+                for (int i = 0; i < Input.touchCount; i++)
                 {
+                    UnityEngine.Touch touch = Input.GetTouch(i);
                     if (touch.phase == TouchPhase.Began)
                     {
-                        if (!IsOverUI(touch.screenPosition))
+                        if (!_eventSystem.IsPointerOverGameObject(touch.fingerId))
                         {
-                            _pointerId = touch.touchId;
-                            _position = touch.screenPosition;
+                            _pointerId = touch.fingerId;
+                            _position = touch.deltaPosition;
                             _delta = Vector2.zero;
                             _down = true;
                             break;
@@ -60,12 +57,13 @@ namespace Systems.Player.Inputs {
                 }
                 return;
             }
-            foreach (var touch in Touch.activeTouches)
+            for (int i = 0; i < Input.touchCount; i++)
             {
-                if (touch.touchId == _pointerId)
+                UnityEngine.Touch touch = Input.GetTouch(i);
+                if (touch.fingerId == _pointerId)
                 {
-                    _position = touch.screenPosition;
-                    _delta = touch.delta;
+                    _position = touch.position;
+                    _delta = touch.deltaPosition;
                     if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
                     {
                         _up = true;
