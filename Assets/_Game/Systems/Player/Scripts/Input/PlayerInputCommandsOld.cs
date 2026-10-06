@@ -26,6 +26,7 @@ namespace Systems.Player.Inputs {
         public override bool GetChangeCharacter => Input.GetKeyDown(KeyCode.L);
         public override void OnEnable()
         {
+            Input.simulateMouseWithTouches = false;
             EnhancedTouchSupport.Enable();
         }
         public override void OnDisable()
@@ -48,7 +49,7 @@ namespace Systems.Player.Inputs {
                         if (!_eventSystem.IsPointerOverGameObject(touch.fingerId))
                         {
                             _pointerId = touch.fingerId;
-                            _position = touch.deltaPosition;
+                            _position = touch.position;
                             _delta = Vector2.zero;
                             _down = true;
                             break;

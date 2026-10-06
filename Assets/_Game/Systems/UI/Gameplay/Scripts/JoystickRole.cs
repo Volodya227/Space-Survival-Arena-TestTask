@@ -38,7 +38,6 @@ namespace Systems.UI.Gameplay.Inputs
                 return;
 
             _pointerId = e.pointerId;
-            Debug.Log("Poiner Down" + _pointerId);
             if (_useReset)
             {
                 _handle.anchoredPosition = Vector2.zero;
@@ -54,10 +53,8 @@ namespace Systems.UI.Gameplay.Inputs
         {
             if (e.pointerId != _pointerId)
                 return;
-            Debug.Log("Poiner Drag" + _pointerId);
             if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(_frame, e.position, _uiCamera, out var currentLocal))
                 return;
-            Debug.Log("Poiner Drag use" + _pointerId);
             Vector2 delta = currentLocal - _startLocalPoint;
             if (!_useX)
                 delta.x = 0;
@@ -74,7 +71,6 @@ namespace Systems.UI.Gameplay.Inputs
         }
         private void Release()
         {
-            Debug.Log("Poiner Up" + _pointerId);
             _pointerId = DefaultId;
             if (_useReset)
             {
