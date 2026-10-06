@@ -48,7 +48,7 @@ namespace Systems.Player.Inputs {
                 {
                     if (touch.phase == TouchPhase.Began)
                     {
-                        if (_eventSystem.IsPointerOverGameObject(touch.touchId))
+                        if (!IsOverUI(touch.screenPosition))
                         {
                             _pointerId = touch.touchId;
                             _position = touch.screenPosition;
