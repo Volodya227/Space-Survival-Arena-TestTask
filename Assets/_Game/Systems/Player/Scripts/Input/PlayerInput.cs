@@ -102,11 +102,6 @@ namespace Systems.Player.Inputs
             if (_stateUI != null)
                 BindUI();
         }
-        protected void SetCameraViewInput(float x, float y, UnityEngine.Vector3 mousePosition)
-        {
-            _cameraViewInput.SetXY(x, y);
-            _cameraViewInput.SetTopDownViewInput(mousePosition);
-        }
         protected void ActivateEventChanageCharacter()
         {
             EventChanageCharacter?.Invoke();

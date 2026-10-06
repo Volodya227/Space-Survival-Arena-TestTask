@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.EnhancedTouch;
 using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 using TouchPhase = UnityEngine.InputSystem.TouchPhase;
@@ -14,7 +16,6 @@ namespace Systems.Player.Inputs {
 
         private bool _up;
         private bool _down;
-
         public override bool GetEscape => Input.GetKeyDown(KeyCode.Escape);
         public override float GetMoveX => Input.GetAxis("Horizontal");
         public override float GetMoveZ => Input.GetAxis("Vertical");
@@ -47,7 +48,7 @@ namespace Systems.Player.Inputs {
                 {
                     if (touch.phase == TouchPhase.Began)
                     {
-                        if (!_eventSystem.IsPointerOverGameObject(touch.touchId))
+                        if (_eventSystem.IsPointerOverGameObject(touch.touchId))
                         {
                             _pointerId = touch.touchId;
                             _position = touch.screenPosition;
