@@ -25,7 +25,6 @@ namespace Systems.Player.Inputs {
         public override bool GetChangeCharacter => Input.GetKeyDown(KeyCode.L);
         public override void OnEnable()
         {
-            Input.simulateMouseWithTouches = false;
             EnhancedTouchSupport.Enable();
         }
         public override void OnDisable()
