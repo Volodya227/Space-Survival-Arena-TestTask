@@ -21,10 +21,11 @@ namespace Systems.UI.Gameplay.Inputs
         }
         public void OnPointerDown(PointerEventData e)
         {
-            if (_pointerId != DefaultId)
-                return;
-            _pointerId = e.pointerId;
-            EventDown?.Invoke();
+            if (_pointerId == DefaultId)
+            {
+                _pointerId = e.pointerId;
+                EventDown?.Invoke();
+            }
         }
         public void OnPointerUp(PointerEventData e)
         {

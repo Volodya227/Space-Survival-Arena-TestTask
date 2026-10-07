@@ -17,9 +17,9 @@ namespace Systems.Player.Inputs {
         public override float GetMoveZ => Input.GetAxis("Vertical");
         public override bool GetMouseDown => Input.GetKeyDown(KeyCode.Mouse0) || _down;
         public override bool GetMouseUp => Input.GetKeyUp(KeyCode.Mouse0) || _up;
-        public override float GetMoveMouseX => _pointerId != DefaultId ? _delta.x : Input.GetAxis("Mouse X");
-        public override float GetMoveMouseY => _pointerId != DefaultId ? _delta.y : Input.GetAxis("Mouse Y");
-        public override Vector3 MousePosition => _pointerId != DefaultId ? _position : Input.mousePosition;
+        public override float GetMoveMouseX => Input.touchCount > 0 ? _delta.x : Input.GetAxis("Mouse X");
+        public override float GetMoveMouseY => Input.touchCount > 0 ? _delta.y : Input.GetAxis("Mouse Y");
+        public override Vector3 MousePosition => Input.touchCount > 0 ? _position : Input.mousePosition;
         public override bool GetReloadPressed => Input.GetKeyDown(KeyCode.R);
         public override bool GetChangeViewKeeping => Input.GetKeyDown(KeyCode.V);//TODO delete "Down"
         public override bool GetChangeActiveUI => Input.GetKeyDown(KeyCode.U);
@@ -43,13 +43,12 @@ namespace Systems.Player.Inputs {
             {
                 for (int i = 0; i < Input.touchCount; i++)
                 {
-                    UnityEngine.Touch touch = Input.GetTouch(i);
-                    if (touch.phase == TouchPhase.Began)
+                    if (Input.GetTouch(i).phase == TouchPhase.Began)
                     {
-                        if (!_eventSystem.IsPointerOverGameObject(touch.fingerId))
+                        if (!_eventSystem.IsPointerOverGameObject(Input.GetTouch(i).fingerId))
                         {
-                            _pointerId = touch.fingerId;
-                            _position = touch.position;
+                            _pointerId = Input.GetTouch(i).fingerId;
+                            _position = Input.GetTouch(i).position;
                             _delta = Vector2.zero;
                             _down = true;
                             break;
@@ -60,12 +59,11 @@ namespace Systems.Player.Inputs {
             }
             for (int i = 0; i < Input.touchCount; i++)
             {
-                UnityEngine.Touch touch = Input.GetTouch(i);
-                if (touch.fingerId == _pointerId)
+                if (Input.GetTouch(i).fingerId == _pointerId)
                 {
-                    _position = touch.position;
-                    _delta = touch.deltaPosition;
-                    if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
+                    _position = Input.GetTouch(i).position;
+                    _delta = Input.GetTouch(i).deltaPosition;
+                    if (Input.GetTouch(i).phase == TouchPhase.Ended || Input.GetTouch(i).phase == TouchPhase.Canceled)
                     {
                         _up = true;
                         _pointerId = DefaultId;
