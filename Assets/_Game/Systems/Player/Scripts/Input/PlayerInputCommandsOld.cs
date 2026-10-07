@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.InputSystem.EnhancedTouch;
-using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 namespace Systems.Player.Inputs {
     public class PlayerInputCommandsOld : PlayerInputCommands
     {
@@ -35,8 +34,6 @@ namespace Systems.Player.Inputs {
         }
         public override void Tick()
         {
-            Tick1();
-            return;
             _down = false;
             _up = false;
             _delta = Vector2.zero;
@@ -66,45 +63,6 @@ namespace Systems.Player.Inputs {
                     _position = Input.GetTouch(i).position;
                     _delta = Input.GetTouch(i).deltaPosition;
                     if (Input.GetTouch(i).phase == TouchPhase.Ended || Input.GetTouch(i).phase == TouchPhase.Canceled)
-                    {
-                        _up = true;
-                        _pointerId = DefaultId;
-                    }
-                    break;
-                }
-            }
-        }
-        private void Tick1()
-        {
-            _down = false;
-            _up = false;
-            _delta = Vector2.zero;
-
-            if (_pointerId == DefaultId)
-            {
-                foreach (var touch in Touch.activeTouches)
-                {
-                    if (touch.phase == UnityEngine.InputSystem.TouchPhase.Began)
-                    {
-                        if (!_eventSystem.IsPointerOverGameObject(touch.touchId))
-                        {
-                            _pointerId = touch.touchId;
-                            _position = touch.screenPosition;
-                            _delta = Vector2.zero;
-                            _down = true;
-                            break;
-                        }
-                    }
-                }
-                return;
-            }
-            foreach (var touch in Touch.activeTouches)
-            {
-                if (touch.touchId == _pointerId)
-                {
-                    _position = touch.screenPosition;
-                    _delta = touch.delta;
-                    if (touch.phase == UnityEngine.InputSystem.TouchPhase.Ended || touch.phase == UnityEngine.InputSystem.TouchPhase.Canceled)
                     {
                         _up = true;
                         _pointerId = DefaultId;
