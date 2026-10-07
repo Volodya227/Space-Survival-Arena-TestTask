@@ -14,8 +14,8 @@ namespace Systems.Player.Inputs {
         public override bool GetEscape => Input.GetKeyDown(KeyCode.Escape);
         public override float GetMoveX => Input.GetAxis("Horizontal");
         public override float GetMoveZ => Input.GetAxis("Vertical");
-        public override bool GetMouseDown => Input.GetKeyDown(KeyCode.Mouse0) || _down;
-        public override bool GetMouseUp => Input.GetKeyUp(KeyCode.Mouse0) || _up;
+        public override bool GetMouseDown => Input.touchCount > 0 ? _down : Input.GetKeyDown(KeyCode.Mouse0);
+        public override bool GetMouseUp => Input.touchCount > 0 ? _up : Input.GetKeyUp(KeyCode.Mouse0);
         public override float GetMoveMouseX => Input.touchCount > 0 ? _delta.x : Input.GetAxis("Mouse X");
         public override float GetMoveMouseY => Input.touchCount > 0 ? _delta.y : Input.GetAxis("Mouse Y");
         public override Vector3 MousePosition => Input.touchCount > 0 ? _position : Input.mousePosition;
