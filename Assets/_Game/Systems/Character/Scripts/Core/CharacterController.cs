@@ -25,7 +25,7 @@ namespace Systems.Character
         private readonly ContainerData.CharacterContainerData _state;
         public ContainerData.ICharacterContainerData State => _state;
         private readonly CharacterConfig _components;
-        [SerializeField] private ChatacterView _characterView;
+        [SerializeField] private CharacterView _characterView;
         private readonly CharacterMovement _movement;
         private readonly CharacterRotation _rotation;
         private readonly Transform _firstView;
@@ -45,7 +45,7 @@ namespace Systems.Character
             _components = components;
             _typeItem = new Resources.Items.TypeItem(id: 0);
             _state = new ContainerData.CharacterContainerData(_data.MaxHealth, _typeItem);
-            _characterView = new ChatacterView(_state, _components.Controller, _components.Animation);
+            _characterView = new CharacterView(_state, _components.Controller, _components.Animation);
             _movement = new CharacterMovement(_state.movementState, _body, _data);
             _rotation = new CharacterRotation(_body.transform);
             _firstView = _components.FirstView;

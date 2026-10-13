@@ -30,10 +30,6 @@ namespace Systems.UI.Gameplay
             _characterUI.SetState(null);
             _endMenuUI.EventExitPanel += HideEndMenu;
         }
-        private void Update()
-        {
-            _weaponUI.Update();
-        }
         public void Init(Data.ApplicationData.IApplicationData applicationData = null)
         {
             _applicationData = applicationData;
@@ -94,7 +90,7 @@ namespace Systems.UI.Gameplay
         public void ChangeActiveUI(bool value)
         {
             ActiveUI = value;
-            EventChangeActiveUI.Invoke();
+            EventChangeActiveUI?.Invoke();
         }
     }
 }

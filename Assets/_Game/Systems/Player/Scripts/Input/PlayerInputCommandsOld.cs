@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.InputSystem.EnhancedTouch;
 namespace Systems.Player.Inputs {
     public class PlayerInputCommandsOld : PlayerInputCommands
     {
@@ -23,14 +22,6 @@ namespace Systems.Player.Inputs {
         public override bool GetChangeViewKeeping => Input.GetKeyDown(KeyCode.V);//TODO delete "Down"
         public override bool GetChangeActiveUI => Input.GetKeyDown(KeyCode.U);
         public override bool GetChangeCharacter => Input.GetKeyDown(KeyCode.L);
-        public override void OnEnable()
-        {
-            EnhancedTouchSupport.Enable();
-        }
-        public override void OnDisable()
-        {
-            EnhancedTouchSupport.Disable();
-        }
         public override void Tick()
         {
             _down = false;

@@ -1,8 +1,10 @@
+using UnityEngine;
+
 namespace Systems.Player.Inputs
 {
     public abstract class PlayerInput : UnityEngine.MonoBehaviour
     {
-        public event System.Action EventChanageCharacter;
+        public event System.Action EventChangeCharacter;
         protected PlayerInputCommands _playerInputCommands;
         protected bool _isUI = false;
         private bool _bindedUIInput = false;
@@ -26,6 +28,7 @@ namespace Systems.Player.Inputs
             SetUIInput(null);
             _cameraViewInput.EventChangeCameraView += SetViewToCharacter;
             SetActiveUIInput(false);//correctly set state
+            SetActiveUIInput(Application.isMobilePlatform);
         }
         private void OnEnable()
         {
@@ -104,7 +107,7 @@ namespace Systems.Player.Inputs
         }
         protected void ActivateEventChanageCharacter()
         {
-            EventChanageCharacter?.Invoke();
+            EventChangeCharacter?.Invoke();
         }
         //TODO bind event from UI
         private void BindUIInput()
