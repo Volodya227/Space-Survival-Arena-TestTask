@@ -56,6 +56,7 @@ namespace Systems.Core.DI
                 _bootstrapEvents.EventQuitApplication -= Exit;
                 //_saveSystem.Delete();//using Delete when to change way for saving data
                 //TODO _saveSystem.Dispose(); for closing database, or file.
+                _instance = null;
             }
         }
         private void LoadSceneAsync(int sceneID)
