@@ -1,73 +1,88 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
-
 namespace Systems.UI.Gameplay.Inputs
 {
-    internal sealed class JoystickRole
+    public sealed class JoystickRole
     {
+        public event System.Action<float, float> EventInput;
+        private int _pointerId = DefaultId;
+        private const int DefaultId = int.MinValue;
+        public int PointerId => _pointerId;
         private readonly RectTransform _frame;
         private readonly RectTransform _handle;
         private readonly float _radius;
-        private readonly UIInputs _inputs;
         private readonly Camera _uiCamera;
-
+        private readonly bool _useX;
+        private readonly bool _useY;
+        private readonly bool _useReset;
         private Vector2 _startLocalPoint;
-        private bool _active;
-
-        public JoystickRole(RectTransform frame, RectTransform handle, float radius, UIInputs inputs, Camera uiCamera)
+        public JoystickRole(RectTransform frame, RectTransform handle, float radius, Camera uiCamera, bool useX = true, bool useY = true, bool useReset = true)
         {
             _frame = frame;
             _handle = handle;
             _radius = radius;
-            _inputs = inputs;
             _uiCamera = uiCamera;
+            _useX = useX;
+            _useY = useY;
+            _useReset = useReset;
         }
-
         public bool IsTarget(PointerEventData e)
         {
-            return RectTransformUtility.RectangleContainsScreenPoint(
-                _frame, e.position, _uiCamera);
+            return RectTransformUtility.RectangleContainsScreenPoint(_frame, e.position, _uiCamera);
         }
-
         public void OnPointerDown(PointerEventData e)
         {
-            if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                _frame, e.position, _uiCamera, out _startLocalPoint))
+            if (_pointerId != DefaultId)
+                return;
+            if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(_frame, e.position, _uiCamera, out var localPoint))
                 return;
 
-            _active = true;
-            _handle.anchoredPosition = Vector2.zero;
-            _inputs.SignalMove(0f, 0f);
+            _pointerId = e.pointerId;
+            if (_useReset)
+            {
+                _handle.anchoredPosition = Vector2.zero;
+                EventInput?.Invoke(0, 0);
+                _startLocalPoint = localPoint;
+            }
+            else
+            {
+                _startLocalPoint = localPoint - _handle.anchoredPosition;
+            }
         }
-
         public void OnDrag(PointerEventData e)
         {
-            if (!_active)
+            if (e.pointerId != _pointerId)
                 return;
-
-            if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                _frame, e.position, _uiCamera, out var currentLocal))
+            if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(_frame, e.position, _uiCamera, out var currentLocal))
                 return;
-
             Vector2 delta = currentLocal - _startLocalPoint;
+            if (!_useX)
+                delta.x = 0;
+            if (!_useY)
+                delta.y = 0;
             Vector2 clamped = Vector2.ClampMagnitude(delta, _radius);
-
             _handle.anchoredPosition = clamped;
-
-            _inputs.SignalMove(
-                clamped.x / _radius,
-                clamped.y / _radius
-            );
+            EventInput?.Invoke(clamped.x / _radius, clamped.y / _radius);
         }
-
         public void OnPointerUp(PointerEventData e)
         {
-            if (!_active)
-                return;
-
-            _active = false;
+            if (e.pointerId == _pointerId)
+                Release();
+        }
+        private void Release()
+        {
+            _pointerId = DefaultId;
+            if (_useReset)
+            {
+                _handle.anchoredPosition = Vector2.zero;
+                EventInput?.Invoke(0, 0);
+            }
+        }
+        public void Cancel()
+        {
+            Release();
             _handle.anchoredPosition = Vector2.zero;
-            _inputs.SignalMoveRelease();
+            EventInput?.Invoke(0, 0);
         }
     }
 }

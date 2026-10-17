@@ -1,8 +1,10 @@
+using UnityEngine;
+
 namespace Systems.Player.Inputs
 {
     public abstract class PlayerInput : UnityEngine.MonoBehaviour
     {
-        public event System.Action EventChanageCharacter;
+        public event System.Action EventChangeCharacter;
         protected PlayerInputCommands _playerInputCommands;
         protected bool _isUI = false;
         private bool _bindedUIInput = false;
@@ -26,6 +28,7 @@ namespace Systems.Player.Inputs
             SetUIInput(null);
             _cameraViewInput.EventChangeCameraView += SetViewToCharacter;
             SetActiveUIInput(false);//correctly set state
+            SetActiveUIInput(Application.isMobilePlatform);
         }
         private void OnEnable()
         {
@@ -45,19 +48,20 @@ namespace Systems.Player.Inputs
         public void SetEventSystem(UnityEngine.EventSystems.EventSystem eventSystem)
         {
             _eventSystem = eventSystem;
+            _playerInputCommands.SetEventSystem(_eventSystem);
         }
         public void SetActiveUIInput(bool value)
         {
             _isUI = value;
             _cameraViewInput.SetMouseLockMode(!_isUI);
+            _inputUI?.SetGameplayMode(_isUI);
             if (_bindedUIInput)
                 UnbindUIInput();
             if (_isUI)
             {
                 BindUIInput();
-                _inputUI.SetGameplayMode(_isUI);
-                ResetInput();
             }
+            ResetInput();
         }
         private void ResetInput()
         {
@@ -101,13 +105,9 @@ namespace Systems.Player.Inputs
             if (_stateUI != null)
                 BindUI();
         }
-        protected void SetCameraViewInput(float x, float y)
-        {
-            _cameraViewInput.SetXY(x, y);
-        }
         protected void ActivateEventChanageCharacter()
         {
-            EventChanageCharacter?.Invoke();
+            EventChangeCharacter?.Invoke();
         }
         //TODO bind event from UI
         private void BindUIInput()

@@ -25,22 +25,36 @@ namespace Systems.Player.Inputs
                 }
                 if (_cameraViewInput.Active)
                 {
-                    
+                    _playerInputCommands.Tick();
                     if (_dragMouse)
-                    {                        
+                    {
                         if (_playerInputCommands.GetMouseUp)
+                        {
                             _dragMouse = false;
+                            _cameraViewInput.SetXY(0, 0);
+                        }
                     }
                     else
                     {
                         if (_playerInputCommands.GetMouseDown || !_isUI)
                         {
-                            if (!_eventSystem.IsPointerOverGameObject())
-                                _dragMouse = true;
+                            if (_playerInputCommands.PointerIdIsDefault)
+                            {
+                                if (!_eventSystem.IsPointerOverGameObject())
+                                    _dragMouse = true;
+                            }
+                            else
+                            {
+                                if (!_eventSystem.IsPointerOverGameObject(_playerInputCommands.PointerId))
+                                    _dragMouse = true;
+                            }
                         }
                     }
                     if (_dragMouse)
-                        SetCameraViewInput(_playerInputCommands.GetMoveMouseX, _playerInputCommands.GetMoveMouseY);
+                    {
+                        _cameraViewInput.SetXY(_playerInputCommands.GetMoveMouseX, _playerInputCommands.GetMoveMouseY);
+                        _cameraViewInput.SetTopDownViewInput(_playerInputCommands.MousePosition);
+                    }
                     if (_playerInputCommands.GetChangeViewKeeping)
                     {
                         _cameraViewInput.ActivateChangeView();

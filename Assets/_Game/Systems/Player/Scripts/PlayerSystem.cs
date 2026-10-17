@@ -21,7 +21,7 @@ namespace Systems.Player
             _input.SetUIInput(_UI.GetInput);
             _input.SetActive(true);
             SetCharacter();
-            _input.EventChanageCharacter += SetCharacter;
+            _input.EventChangeCharacter += SetCharacter;
         }
         public void SetActiveInput(bool value)
         {
@@ -32,7 +32,7 @@ namespace Systems.Player
             _player.Dispose();
             _input.SetUIInput(null);
             _input.SetActive(false);
-            _input.EventChanageCharacter -= SetCharacter;
+            _input.EventChangeCharacter -= SetCharacter;
             _input.Dispose();
         }
         private void SetCharacter()

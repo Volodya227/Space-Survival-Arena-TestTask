@@ -16,12 +16,14 @@ namespace Systems.UI.Gameplay.WeaponViewData
             {
                 _state.EventChangeProjectileCount -= ChangeProjectileCount;
                 _state.EventChangeProjectileCountMax -= ChangeProjectileCountMax;
+                _state.EventChangeReloadingTime -= ChangeReloadingTime;
             }
             _state = state;
             if (_state != null)
             {
                 _state.EventChangeProjectileCount += ChangeProjectileCount;
                 _state.EventChangeProjectileCountMax += ChangeProjectileCountMax;
+                _state.EventChangeReloadingTime += ChangeReloadingTime;
                 UpdateData();
             }
             _panel.gameObject.SetActive(_state != null);
@@ -31,11 +33,6 @@ namespace Systems.UI.Gameplay.WeaponViewData
             ChangeReloadingTime();
             ChangeProjectileCount();
             ChangeProjectileCountMax();
-        }
-        public void Update() {
-            if (_state != null) {
-                ChangeReloadingTime();
-            }
         }
         private void ChangeReloadingTime()
         {

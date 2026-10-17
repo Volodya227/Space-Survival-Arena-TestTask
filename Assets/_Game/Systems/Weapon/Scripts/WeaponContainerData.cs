@@ -4,6 +4,7 @@ namespace Systems.Weapon.ContainerData
     {
         public event System.Action EventChangeProjectileCount;
         public event System.Action EventChangeProjectileCountMax;
+        public event System.Action EventChangeReloadingTime;
         public int ProjectileCount { get; }
         public int ProjectileCountMax { get; }
         public float ReloadingTime { get; }
@@ -12,6 +13,7 @@ namespace Systems.Weapon.ContainerData
     {
         public event System.Action EventChangeProjectileCount;
         public event System.Action EventChangeProjectileCountMax;
+        public event System.Action EventChangeReloadingTime;
         public int ProjectileCount { get; private set; }
         public int ProjectileCountMax { get; private set; }
         public float ReloadingTime { get; set; }
@@ -28,6 +30,7 @@ namespace Systems.Weapon.ContainerData
         }
         public void SetReloadingTime(float value) {
             ReloadingTime = value;
+            EventChangeReloadingTime?.Invoke();
         }
     }
 }
